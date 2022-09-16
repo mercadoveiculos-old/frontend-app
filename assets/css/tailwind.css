@@ -1,0 +1,177 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* a:hover {
+  @apply hover:underline;
+} */
+
+/* Labels */
+.label {
+  @apply text-sm text-primary font-semibold;
+}
+
+/* Inputs */
+.input {
+  @apply form-input rounded h-10 placeholder-dark-main-300 w-full;
+}
+
+@media (min-width: 768px) {
+  .md\:input\:small {
+    @apply h-8;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:input\:small {
+    @apply h-8;
+  }
+}
+
+@media (min-width: 1280px) {
+  .xl\:input\:small {
+    @apply h-8;
+  }
+}
+
+@media (min-width: 768px) {
+  .md\:input\:large {
+    @apply h-12;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:input\:large {
+    @apply h-12;
+  }
+}
+
+@media (min-width: 1280px) {
+  .xl\:input\:large {
+    @apply h-12;
+  }
+}
+
+
+/* Botões */
+.btn {
+  @apply flex items-center justify-center py-2 px-4 text-lg md:text-base shadow-md rounded hover:shadow-md transition duration-300 text-center cursor-pointer;
+}
+
+
+@media (min-width: 768px) {
+  .md\:btn\:small {
+    @apply py-2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:btn\:small {
+    @apply py-1.5;
+  }
+}
+
+@media (min-width: 1280px) {
+  .xl\:btn\:small {
+    @apply py-1.5;
+  }
+}
+
+.btn-primary-outline {
+  @apply bg-white text-primary-main-normal border border-primary-main-normal hover:text-primary-main-hover hover:border-primary-main-hover hover:shadow-md;
+}
+
+
+.btn-sm {
+  @apply px-4 text-base md:text-sm rounded text-center shadow-md hover:shadow-lg transition duration-300;
+}
+
+.btn-primary {
+  @apply bg-primary-main-normal text-white hover:bg-primary-main-hover hover:shadow-md;
+}
+
+
+.shadow-1dp {
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.14), 0px 2px 2px rgba(0, 0, 0, 0.12),
+    0px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.shadow-4dp {
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.14), 0px 4px 5px rgba(0, 0, 0, 0.12),
+    0px 1px 10px rgba(0, 0, 0, 0.2);
+}
+
+.radial-h {
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    #d1d5db 0%,
+    rgba(209, 213, 219, 0) 100%
+  );
+  filter: drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.16));
+}
+
+.divider-horizontal {
+  @apply h-0.5 w-full radial-h;
+}
+
+.btn-cta {
+  @apply shadow-md px-5 md:px-4 rounded-md hover:shadow-md transition duration-300 text-center;
+}
+
+.btn-large {
+  @apply shadow-md h-12 px-5 text-lg rounded-md hover:shadow-md transition duration-300 text-center;
+}
+
+
+.props-btn-secondary {
+  @apply bg-secondary-button text-white hover:bg-secondary-button-hover hover:shadow-md;
+}
+
+.btn-secondary-large {
+  @apply btn-large props-btn-secondary;
+}
+
+.btn-secondary {
+  @apply btn h-10 props-btn-secondary;
+}
+
+.btn-secondary-sm {
+  @apply btn-sm h-8 props-btn-secondary;
+}
+
+.btn-green {
+  @apply btn bg-green-main-700 text-white hover:bg-green-main-800 hover:shadow-md;
+}
+
+.btn-green-sm {
+  @apply btn-sm bg-green-main-700 text-white hover:bg-green-main-800 hover:shadow-md;
+}
+
+
+.props-btn-green {
+  @apply bg-green-main-800 text-white hover:bg-green-main-900 hover:shadow-md;
+}
+
+.btn-green {
+  @apply btn props-btn-green;
+}
+
+.props-btn-disabled {
+  @apply bg-gray-main-200 text-dark-main-300  hover:shadow-md;
+}
+
+.btn-disabled {
+  @apply btn props-btn-disabled;
+}
+
+.item-btn-links-pg-services {
+  @apply flex items-center gap-1 py-1 px-2 bg-white border border-primary-main-400 rounded text-sm text-primary-main-400 font-medium cursor-pointer  hover:shadow-lg hover:border-opacity-30;
+}
+
+.item-nav-footer-bold {
+  @apply md:text-base xl:text-lg font-montserrat font-bold text-gray-400;
+}
+
+.item-nav-footer-medium {
+  @apply text-lg font-montserrat font-medium text-gray-400;
+}
