@@ -1,8 +1,8 @@
 <template>
   <div>
     <button
-      @click.prevent="openModalActive"
       class="flex items-center text-xs text-link"
+      @click.prevent="openModalActive"
     >
       <svg
         width="24"

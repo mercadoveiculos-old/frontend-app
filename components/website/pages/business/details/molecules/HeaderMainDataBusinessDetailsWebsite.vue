@@ -1,5 +1,5 @@
 <template>
-  <Header class="mb-6">
+  <Header class-name="mb-6">
     <div class="flex items-center gap-4 mb-6">
       <div
         v-if="$logo"

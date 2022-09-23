@@ -1,5 +1,5 @@
 <template>
-  <Header className="md:hidden bg-primary-main-700 max-h-16">
+  <Header class-name="md:hidden bg-primary-main-700 max-h-16">
     <div class="container grid grid-cols-2 items-center py-1.5">
       <div class="w-full">
         <LogoDefaultWebsite />

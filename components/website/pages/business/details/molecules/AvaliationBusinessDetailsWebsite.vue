@@ -1,5 +1,9 @@
 <template>
-  <Article className="my-8" itemscope itemtype="http://schema.org/UserComments">
+  <Article
+    class-name="my-8"
+    itemscope
+    itemtype="http://schema.org/UserComments"
+  >
     <div class="flex flex-col gap-2">
       <header>
         <div
@@ -24,7 +28,7 @@
               itemtype="https://schema.org/Rating"
             >
               <meta itemprop="ratingValue" :content="totalRatingContent" />
-              <GenerateRatingWebsite :totalRating="totalRatingContent" />
+              <GenerateRatingWebsite :total-rating="totalRatingContent" />
             </div>
 
             <h1 class="text-sm font-semibold text-primary">Perfeito</h1>
@@ -59,7 +63,7 @@ export default Vue.extend({
     }
   },
   mounted() {
-    let value = Math.floor(Math.random() * 5)
+    const value = Math.floor(Math.random() * 5)
     value === 0 ? 1 : value
 
     this.totalRatingContent = Number(value)

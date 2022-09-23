@@ -1,6 +1,6 @@
 <template>
-  <Section className="md:col-span-12 lg:col-span-7 mt-4 md:-mt-4">
-    <Article className="flex flex-col gap-y-12">
+  <Section class-name="md:col-span-12 lg:col-span-7 mt-4 md:-mt-4">
+    <Article class-name="flex flex-col gap-y-12">
       <!-- Dados principais -->
       <MainDataBusinessDetailsWebsite />
 
@@ -10,16 +10,16 @@
 
       <client-only>
         <!-- MD Solicitar orçamento -->
-        <Section className="lg:hidden md:bg-gray-50">
+        <Section class-name="lg:hidden md:bg-gray-50">
           <div class="w-full md:w-8/12 mx-auto md:py-10">
             <FormBudgetBusinessDetailsWebsite />
           </div>
         </Section>
 
         <!-- AdsWebsite -->
-        <Section className="lg:hidden w-full md:w-8/12 mx-auto">
+        <Section class-name="lg:hidden w-full md:w-8/12 mx-auto">
           <AdsWebsite
-            className="bg-white border border-gray-main-200 rounded-md lg:mt-10 top-6"
+            class-name="bg-white border border-gray-main-200 rounded-md lg:mt-10 top-6"
           />
         </Section>
       </client-only>

@@ -12,8 +12,8 @@
         ></div>
 
         <button
-          @click.prevent="showContact"
           class="absolute btn-secondary md:btn-secondary-sm z-30 right-1"
+          @click.prevent="showContact"
         >
           Ver telefone
         </button>

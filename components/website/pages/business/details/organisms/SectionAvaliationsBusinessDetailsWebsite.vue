@@ -1,5 +1,5 @@
 <template>
-  <Section className="md:col-span-12 mb-10">
+  <Section class-name="md:col-span-12 mb-10">
     <Header>
       <H2BusinessDetailsWebsite title="Avaliações" />
     </Header>

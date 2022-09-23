@@ -3,8 +3,8 @@
     class="md:col-span-3 lg:col-span-3 order-first lg:order-last mt-8 md:mt-auto"
   >
     <select
-      name="avaliacoes"
       id="avaliacoes"
+      name="avaliacoes"
       class="rounded-full h-8 text-xs border shadow-1dp border-gray-100 text-secondary-button"
       style=""
     >

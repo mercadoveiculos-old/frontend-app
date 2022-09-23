@@ -1,11 +1,11 @@
 <template>
   <section
     :id="IDName"
+    class="bg-gray-main-200 border-t border-primary-main-200 py-16 lg:py-20"
     @mouseenter="handleEventEnter"
     @mouseleave="handleEventLeave"
     @touchstart="handleEventEnter"
     @touchend="handleEventLeave"
-    class="bg-gray-main-200 border-t border-primary-main-200 py-16 lg:py-20"
   >
     <div class="container flex flex-col gap-10 md:gap-12">
       <h1

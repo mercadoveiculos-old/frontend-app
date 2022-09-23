@@ -14,6 +14,7 @@ export default Vue.extend({
       required: true
     },
     className: {
+      type: String,
       default: 'text-2xl md:text-3xl font-montserrat text-primary font-semibold'
     }
   }

@@ -2,11 +2,11 @@
   <!-- Footer -->
   <footer
     :id="IDName"
+    class="bg-primary-main-900"
     @mouseenter="handleEventEnter"
     @mouseleave="handleEventLeave"
     @touchstart="handleEventEnter"
     @touchend="handleEventLeave"
-    class="bg-primary-main-900"
   >
     <!-- FOOTER SUPERIOR -->
     <!--

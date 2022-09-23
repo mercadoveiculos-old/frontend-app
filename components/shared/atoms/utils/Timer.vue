@@ -33,6 +33,9 @@ export default Vue.extend({
       timerDisplay: ''
     }
   },
+  mounted() {
+    this.startTimer(60 * Number(this.duration))
+  },
   methods: {
     startTimer(duration: number): void {
       let timer: number = duration
@@ -50,9 +53,6 @@ export default Vue.extend({
         }
       }, 1000)
     }
-  },
-  mounted() {
-    this.startTimer(60 * Number(this.duration))
   }
 })
 </script>

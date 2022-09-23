@@ -23,9 +23,9 @@
     >
       <div v-if="show" class="w-5/6 md:w-3/6">
         <div
-          class="flex justify-between md:flex-none md:grid md:grid-cols-2 gap-0 text-base mb-5 md:mb-3 font-normal text-secondary"
           v-for="data in arrayDataHours"
           :key="data.key"
+          class="flex justify-between md:flex-none md:grid md:grid-cols-2 gap-0 text-base mb-5 md:mb-3 font-normal text-secondary"
         >
           <div :class="data | filterDay">
             {{ data.day }}
@@ -51,7 +51,7 @@
     </transition>
 
     <div v-show="!show">
-      <button @click.prevent="showHours()" class="flex items-center gap-2">
+      <button class="flex items-center gap-2" @click.prevent="showHours()">
         <!-- <span class="text-sm font-medium text-secondary-main-normal">
         Aberto 24 Horas
       </span> -->
@@ -84,6 +84,15 @@ interface Hours {
 }
 
 export default Vue.extend({
+  filters: {
+    filterDay(data: any) {
+      const today = moment().format('dddd')
+      if (data.key == today) {
+        return 'font-bold text-primary'
+      }
+      return ''
+    }
+  },
   data() {
     return {
       closed: 'Fechado',
@@ -142,34 +151,28 @@ export default Vue.extend({
       ]
     }
   },
-  filters: {
-    filterDay(data: any) {
-      const today = moment().format('dddd')
-      if (data.key == today) {
-        return 'font-bold text-primary'
-      }
-      return ''
-    }
+  mounted() {
+    this.listNewArrayHours()
   },
   methods: {
     showHours() {
       this.show = true
     },
     sortArrayHours(toSort: any) {
-      let today = moment().format('dddd'),
-        list = [
-          'Sunday',
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-          'Saturday'
-        ], // days list
-        before = list.splice(0, list.indexOf(today))
+      const today = moment().format('dddd')
+      let list = [
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday'
+      ] // days list
+      const before = list.splice(0, list.indexOf(today))
       list = list.concat(before)
       return list.filter(function (item) {
-        return toSort.indexOf(item) !== -1
+        return toSort.includes(item)
       })
     },
     listNewArrayHours() {
@@ -185,9 +188,6 @@ export default Vue.extend({
         })
       })
     }
-  },
-  mounted() {
-    this.listNewArrayHours()
   }
 })
 </script>

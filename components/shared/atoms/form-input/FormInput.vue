@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/require-default-prop -->
 <template>
   <div :class="wrapper">
     <label class="label" :for="random">{{ label }}</label>
@@ -28,16 +29,20 @@ export default Vue.extend({
       default: 'text'
     },
     name: {
-      type: String
+      type: String,
+      default: ''
     },
     value: {
-      type: [String, Number]
+      type: [String, Number],
+      default: ''
     },
     placeholder: {
-      type: String
+      type: String,
+      default: ''
     },
     label: {
-      type: String
+      type: String,
+      default: ''
     },
     className: {
       type: String,

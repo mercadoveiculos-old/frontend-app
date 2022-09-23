@@ -2,7 +2,7 @@
   <LinkBase
     link="#"
     text="Veja outros resultados"
-    className="flex items-center text-xs text-link"
+    class-name="flex items-center text-xs text-link"
   >
     <template slot="left">
       <svg

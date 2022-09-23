@@ -7,13 +7,13 @@
       itemtype="https://schema.org/Rating"
     >
       <meta itemprop="ratingValue" content="4" />
-      <GenerateRatingWebsite :totalRating="3" />
+      <GenerateRatingWebsite :total-rating="3" />
     </div>
 
     <NuxtLink
+      v-scroll-to="'#avaliations'"
       to="#"
       class="text-xs text-primary"
-      v-scroll-to="'#avaliations'"
       rel="nofollow"
       >seja o primeiro a avaliar</NuxtLink
     >

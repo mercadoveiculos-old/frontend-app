@@ -6,7 +6,7 @@
         v-for="(url, index) in youtubeUrl"
         :key="index"
         :url="url"
-        className="w-full h-56 md:h-52 lg:h-44 aspect-auto"
+        class-name="w-full h-56 md:h-52 lg:h-44 aspect-auto"
       />
     </div>
   </Section>

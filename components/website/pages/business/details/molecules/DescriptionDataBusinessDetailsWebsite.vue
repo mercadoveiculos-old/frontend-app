@@ -53,9 +53,9 @@
           </svg>
 
           <NuxtLink
+            v-scroll-to="'#learn-more'"
             to="#"
             class="text-xs text-primary-main-normal"
-            v-scroll-to="'#learn-more'"
             rel="nofollow"
             >Saiba mais</NuxtLink
           >

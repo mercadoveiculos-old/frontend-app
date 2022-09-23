@@ -9,7 +9,7 @@
       />
     </div>
 
-    <div v-if="showTags" class="flex gap-4 flex-wrap">
+    <div v-if="showSection" class="flex gap-4 flex-wrap">
       <TagServiceOfferedBusinessDetailsWebsite
         v-for="(tag, index) in $tags"
         :key="index"
@@ -28,7 +28,7 @@ import { CategoryReplica, TagReplica } from '@/models'
 export default Vue.extend({
   data() {
     return {
-      showTags: false
+      showSection: false
     }
   },
 
@@ -47,7 +47,7 @@ export default Vue.extend({
   mounted() {
     const tags = Object.entries(this.$tags)
     if (tags.length > 0) {
-      this.showTags = true
+      this.showSection = true
     }
   }
 })

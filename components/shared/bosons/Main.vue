@@ -10,7 +10,8 @@ import Vue from 'vue'
 export default Vue.extend({
   props: {
     className: {
-      type: String
+      type: String,
+      default: ''
     }
   }
 })

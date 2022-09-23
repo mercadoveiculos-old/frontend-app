@@ -24,10 +24,12 @@ export default Vue.extend({
       required: true
     },
     title: {
-      type: String
+      type: String,
+      required: true
     },
     rel: {
-      type: String
+      type: String,
+      default: ''
     },
     link: {
       type: String,

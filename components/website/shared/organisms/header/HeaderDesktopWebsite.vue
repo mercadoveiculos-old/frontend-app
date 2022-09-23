@@ -1,5 +1,5 @@
 <template>
-  <Header className="hidden md:block">
+  <Header class-name="hidden md:block">
     <!-- Header Superior-->
     <HeaderWrapperSuperiorWebsite />
     <!-- Header Inferior -->

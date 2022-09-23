@@ -5,28 +5,28 @@
         <LinkBase
           link="#"
           text="Veículos à venda"
-          className="text-sm text-white font-normal"
+          class-name="text-sm text-white font-normal"
         />
       </li>
       <li>
         <LinkBase
           link="#"
           text="Serviços & Reparos"
-          className="text-sm text-yellow-main-700 font-normal"
+          class-name="text-sm text-yellow-main-700 font-normal"
         />
       </li>
       <li>
         <LinkBase
           link="#"
           text="Revendas"
-          className="text-sm text-white font-normal"
+          class-name="text-sm text-white font-normal"
         />
       </li>
       <li>
         <LinkBase
           link="#"
           text="Venda seu veículo"
-          className="text-sm text-white font-normal"
+          class-name="text-sm text-white font-normal"
         />
       </li>
     </ul>

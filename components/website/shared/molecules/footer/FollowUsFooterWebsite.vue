@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-lone-template -->
 <template>
   <div class="flex flex-col justify-center text-center gap-3">
     <span>Siga-nos!</span>

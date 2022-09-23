@@ -1,8 +1,8 @@
 <template>
   <section
     v-if="$isModalActive"
-    @click.prevent="toggleModalActive"
     class="fixed inset-0 overflow-y-auto h-full w-full bg-gray-900 bg-opacity-95 z-50"
+    @click.prevent="toggleModalActive"
   >
     <div :class="classNameModal">
       <header class="flex p-4 justify-between">
@@ -13,7 +13,7 @@
             {{ title }}
           </h3>
         </div>
-        <button @click.prevent="closeModalActive" title="Fechar">
+        <button title="Fechar" @click.prevent="closeModalActive">
           <svg
             width="25"
             height="24"

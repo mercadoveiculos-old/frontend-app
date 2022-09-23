@@ -4,9 +4,9 @@
       link="#"
       rel="nofollow"
       text="Site"
-      className="item-btn-links-pg-services"
+      class-name="item-btn-links-pg-services"
     >
-      <template v-slot:left>
+      <template #left>
         <svg
           width="24"
           height="24"
@@ -24,9 +24,9 @@
       link="#"
       rel="nofollow"
       text="E-mail"
-      className="item-btn-links-pg-services"
+      class-name="item-btn-links-pg-services"
     >
-      <template v-slot:left>
+      <template #left>
         <svg
           width="24"
           height="24"
@@ -48,9 +48,9 @@
       link="#"
       rel="nofollow"
       text="Avaliar"
-      className="item-btn-links-pg-services"
+      class-name="item-btn-links-pg-services"
     >
-      <template v-slot:left>
+      <template #left>
         <svg
           width="24"
           height="24"
@@ -69,9 +69,9 @@
       link="#"
       rel="nofollow"
       text="Facebook"
-      className="item-btn-links-pg-services"
+      class-name="item-btn-links-pg-services"
     >
-      <template v-slot:left>
+      <template #left>
         <svg
           width="24"
           height="24"
@@ -92,9 +92,9 @@
       link="#"
       rel="nofollow"
       text="WhatsApp"
-      className="item-btn-links-pg-services"
+      class-name="item-btn-links-pg-services"
     >
-      <template v-slot:left>
+      <template #left>
         <svg
           width="24"
           height="24"
@@ -113,9 +113,9 @@
       link="#"
       rel="nofollow"
       text="Instagram"
-      className="item-btn-links-pg-services"
+      class-name="item-btn-links-pg-services"
     >
-      <template v-slot:left>
+      <template #left>
         <svg
           width="24"
           height="24"

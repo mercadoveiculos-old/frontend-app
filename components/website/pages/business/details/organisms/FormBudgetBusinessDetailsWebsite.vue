@@ -1,7 +1,7 @@
 <template>
   <section
-    class="flex flex-col gap-6 bg-white border border-gray-main-200 rounded-md px-6 py-7"
     id="component-form-budget"
+    class="flex flex-col gap-6 bg-white border border-gray-main-200 rounded-md px-6 py-7"
     @mouseenter="enterFormBudget"
     @mouseleave="leaveFormBudget"
   >
@@ -13,7 +13,7 @@
       <span class="capitalize font-semibold">motorama retífica de motores</span>
     </p>
     <ValidationObserver ref="form">
-      <form @submit.prevent="onSubmit" method="post">
+      <form @submit.prevent="onSubmit">
         <div class="flex flex-col gap-5">
           <ValidationProvider
             v-slot="{ errors, valid }"
@@ -23,8 +23,8 @@
             <div class="flex flex-col gap-1">
               <label for="name" class="label font-semibold">Nome</label>
               <input
-                type="text"
                 id="name"
+                type="text"
                 :error-messages="errors"
                 :success="valid"
                 placeholder="Nome"
@@ -44,9 +44,9 @@
               <div class="flex flex-col gap-1">
                 <label for="email" class="label font-semibold">E-mail</label>
                 <input
+                  id="email"
                   v-model.trim="form.email"
                   type="text"
-                  id="email"
                   :error-messages="errors"
                   :success="valid"
                   placeholder="Seu melhor email"
@@ -65,10 +65,10 @@
                 >Telefone (opcional)</label
               >
               <input
-                type="text"
                 id="phone"
-                placeholder="Telefone"
                 v-model="form.phone"
+                type="text"
+                placeholder="Telefone"
                 class="input lg:input"
               />
             </div>
@@ -100,7 +100,7 @@
           >
             Solicitar orçamento
           </button>
-          <button @click.prevent="openModalActive" class="btn-secondary">
+          <button class="btn-secondary" @click.prevent="openModalActive">
             Modal
           </button>
         </div>

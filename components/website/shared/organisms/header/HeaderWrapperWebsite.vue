@@ -1,7 +1,7 @@
 <template>
   <div
-    class="relative"
     id="component-header"
+    class="relative"
     @mouseenter="enterHeader"
     @mouseleave="leaveHeader"
   >

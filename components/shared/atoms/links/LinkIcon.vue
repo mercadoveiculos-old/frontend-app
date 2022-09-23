@@ -13,13 +13,16 @@ import Vue from 'vue'
 export default Vue.extend({
   props: {
     title: {
-      type: String
+      type: String,
+      required: true
     },
     rel: {
-      type: String
+      type: String,
+      default: ''
     },
     link: {
-      type: String
+      type: String,
+      required: true
     },
     className: {
       type: String,

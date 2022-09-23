@@ -15,13 +15,13 @@
 </template>
 <script>
 export default {
+  name: 'Website',
   head() {
     return {
       bodyAttrs: {
         class: 'font-roboto lg:bg-gray-main-5 text-secondary'
       }
     }
-  },
-  name: 'website'
+  }
 }
 </script>
