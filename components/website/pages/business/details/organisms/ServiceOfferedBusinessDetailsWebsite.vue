@@ -3,17 +3,17 @@
     <H2BusinessDetailsWebsite title="Serviços oferecidos" />
     <div class="flex gap-4 my-7">
       <CategoryServiceOfferedServiceBusinessWebsite
-        v-for="(category, index) in categories"
+        v-for="(category, index) in $categories"
         :key="index"
-        :text="category"
+        :text="category.name"
       />
     </div>
 
-    <div class="flex gap-4 flex-wrap">
+    <div v-if="showTags" class="flex gap-4 flex-wrap">
       <TagServiceOfferedBusinessDetailsWebsite
-        v-for="(tag, index) in tags"
+        v-for="(tag, index) in $tags"
         :key="index"
-        :text="tag"
+        :text="tag.name"
       />
     </div>
   </Section>
@@ -22,21 +22,32 @@
 <script lang="ts">
 import Vue from 'vue'
 
+import { businessReading } from '@/store'
+import { CategoryReplica, TagReplica } from '@/models'
+
 export default Vue.extend({
   data() {
     return {
-      categories: ['Retífica de motores', 'Oficina'],
-      tags: [
-        'cabeçote',
-        'motor diesel',
-        'peças e serviços automotivos',
-        'reconstrução de motor',
-        'retífica de motor diesel',
-        'retífica de motor para carro',
-        'retífica de motor para moto',
-        'serviço de retífica motor',
-        'serviço de retífica veículo nacional'
-      ]
+      showTags: false
+    }
+  },
+
+  computed: {
+    $categories(): CategoryReplica {
+      const categories = businessReading.$categories || []
+      return (this as any)._.orderBy(categories, ['name'], ['asc'])
+    },
+
+    $tags(): TagReplica {
+      const tags = businessReading.$tags || []
+      return (this as any)._.orderBy(tags, ['name'], ['asc'])
+    }
+  },
+
+  mounted() {
+    const tags = Object.entries(this.$tags)
+    if (tags.length > 0) {
+      this.showTags = true
     }
   }
 })

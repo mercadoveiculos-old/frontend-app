@@ -18,9 +18,24 @@ export default class BusinessReading extends VuexModule {
     return this.attributes
   }
 
-  // Cria o getter de negócio:
+  get $categories() {
+    return this.attributes.categories
+  }
+
+  get $tags() {
+    return this.attributes.tags
+  }
+
   get $images() {
     return this.attributes.images
+  }
+
+  get $payments() {
+    return this.attributes.payments
+  }
+
+  get $videos() {
+    return this.attributes.videos
   }
 
   @Mutation
