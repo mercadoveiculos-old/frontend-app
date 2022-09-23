@@ -1,5 +1,5 @@
 <template>
-  <Section v-if="$images">
+  <Section v-if="showSection">
     <H2BusinessDetailsWebsite title="Fotos" />
     <div class="md:h-36 xl:h-44 mt-6">
       <client-only>
@@ -26,11 +26,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { businessReading } from '@/store'
-import { Image } from '@/models'
+import { ImageReplica } from '@/models'
 
 export default Vue.extend({
   data() {
     return {
+      showSection: false,
       options: {
         loop: true,
         perPageCustom: [
@@ -45,21 +46,15 @@ export default Vue.extend({
   },
 
   computed: {
-    $images(): false | Image {
-      if (!(this as any)._.isArray(businessReading.$images)) {
-        return false
-      }
-
-      if (!(this as any)._.isEmpty(businessReading.$images)) {
-        return businessReading.$images
-      }
-
-      return false
+    $images(): ImageReplica {
+      return businessReading.$images || []
     }
   },
 
   async mounted() {
-    if (this.$images) {
+    const images = Object.entries(this.$images)
+    if (images.length > 0) {
+      this.showSection = true
       await this.$nextTick()
       const textbox = this.$el.querySelector(
         '.VueCarousel-inner'

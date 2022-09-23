@@ -1,5 +1,5 @@
 export interface UtilReplica {
-  id: string
+  id?: string
   business_id: string
   contact_email: string
   contact_whatsapp: string
