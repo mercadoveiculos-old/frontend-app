@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full md:w-10/12 my-6">
+  <div v-if="showDiv" class="w-full md:w-10/12 my-6">
     <div class="flex gap-2">
       <div>
         <svg
@@ -35,9 +35,7 @@
 
       <div class="flex flex-col md:flex-row gap-2">
         <p class="text-xs flex-1">
-          Venha conhecer o mais moderno Lava Jato Brilho Car, localizado na Zona
-          Norte, amplo estacionamento e serviços de primeira qualidade que
-          oferece o máximo de requinte para sua satisfação.
+          {{ $description | cutText }}
         </p>
         <div class="flex gap-1 items-center justify-end md:justify-start">
           <svg
@@ -67,8 +65,32 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { businessReading } from '@/store'
 
-export default Vue.extend({})
+export default Vue.extend({
+  filters: {
+    cutText(value: string): string {
+      const total = 140
+      if (value.length > total) {
+        return `${value.slice(0, total)} ...`
+      }
+      return value
+    }
+  },
+  data() {
+    return {
+      showDiv: false
+    }
+  },
+
+  computed: {
+    $description(): string | null {
+      return businessReading.$attributes.description || null
+    }
+  },
+
+  mounted() {
+    if (this.$description) this.showDiv = true
+  }
+})
 </script>
-
-<style scoped></style>

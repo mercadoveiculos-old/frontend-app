@@ -21,11 +21,11 @@ export default Vue.extend({
   props: {
     text: {
       type: String,
-      required: true
+      default: ''
     },
     title: {
       type: String,
-      required: true
+      default: ''
     },
     rel: {
       type: String,

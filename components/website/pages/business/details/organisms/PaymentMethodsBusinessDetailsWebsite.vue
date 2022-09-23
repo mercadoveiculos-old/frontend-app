@@ -1,5 +1,5 @@
 <template>
-  <Section v-if="showSection">
+  <Section v-show="showSection">
     <H2BusinessDetailsWebsite title="Formas de pagamento aceitas" />
 
     <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-7 gap-y-3 mt-6">
@@ -28,17 +28,17 @@ export default Vue.extend({
   },
 
   computed: {
-    $payments(): PaymentReplica {
-      const payments = businessReading.$payments || []
-      return (this as any)._.orderBy(payments, ['position'], ['asc'])
+    $payments(): PaymentReplica | never[] {
+      const payments = businessReading.$payments || null
+      if (payments)
+        return (this as any)._.orderBy(payments, ['position'], ['asc'])
+      return []
     }
   },
 
   mounted() {
     const payments = Object.entries(this.$payments)
-    if (payments.length > 0) {
-      this.showSection = true
-    }
+    if (payments.length > 0) this.showSection = true
   }
 })
 </script>

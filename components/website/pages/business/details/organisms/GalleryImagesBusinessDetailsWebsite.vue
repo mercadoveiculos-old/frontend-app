@@ -1,5 +1,5 @@
 <template>
-  <Section v-if="showSection">
+  <Section v-show="showSection">
     <H2BusinessDetailsWebsite title="Fotos" />
     <div class="md:h-36 xl:h-44 mt-6">
       <client-only>
@@ -46,7 +46,7 @@ export default Vue.extend({
   },
 
   computed: {
-    $images(): ImageReplica {
+    $images(): ImageReplica | never[] {
       return businessReading.$images || []
     }
   },

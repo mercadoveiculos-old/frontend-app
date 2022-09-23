@@ -1,7 +1,7 @@
 <template>
   <iframe
     :class="className"
-    :src="url"
+    :src="`https://www.youtube.com/embed/${code}`"
     loading="lazy"
     title="YouTube video player"
     frameborder="0"
@@ -19,12 +19,10 @@ export default Vue.extend({
       type: String,
       required: true
     },
-    url: {
+    code: {
       type: String,
       required: true
     }
   }
 })
 </script>
-
-<style scoped></style>

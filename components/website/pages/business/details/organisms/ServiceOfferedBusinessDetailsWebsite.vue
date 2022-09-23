@@ -9,7 +9,7 @@
       />
     </div>
 
-    <div v-if="showSection" class="flex gap-4 flex-wrap">
+    <div v-show="showSection" class="flex gap-4 flex-wrap">
       <TagServiceOfferedBusinessDetailsWebsite
         v-for="(tag, index) in $tags"
         :key="index"
@@ -33,22 +33,23 @@ export default Vue.extend({
   },
 
   computed: {
-    $categories(): CategoryReplica {
-      const categories = businessReading.$categories || []
-      return (this as any)._.orderBy(categories, ['name'], ['asc'])
+    $categories(): CategoryReplica | never[] {
+      const categories = businessReading.$categories || null
+      if (categories)
+        return (this as any)._.orderBy(categories, ['name'], ['asc'])
+      return []
     },
 
-    $tags(): TagReplica {
-      const tags = businessReading.$tags || []
-      return (this as any)._.orderBy(tags, ['name'], ['asc'])
+    $tags(): TagReplica | never[] {
+      const tags = businessReading.$tags || null
+      if (tags) return (this as any)._.orderBy(tags, ['name'], ['asc'])
+      return []
     }
   },
 
   mounted() {
     const tags = Object.entries(this.$tags)
-    if (tags.length > 0) {
-      this.showSection = true
-    }
+    if (tags.length > 0) this.showSection = true
   }
 })
 </script>
