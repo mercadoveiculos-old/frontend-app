@@ -1,5 +1,5 @@
 <template>
-  <Header className="mb-6">
+  <Header class="mb-6">
     <div class="flex items-center gap-4 mb-6">
       <div
         v-if="$logo"
@@ -22,18 +22,11 @@ import { businessReading } from '@/store'
 
 export default Vue.extend({
   computed: {
-    $logo(): string | false | undefined {
-      if (!(this as any)._.isEmpty(businessReading.$attributes.logo)) {
-        return businessReading.$attributes.logo
-      }
-      return false
+    $logo(): string | null | undefined {
+      return businessReading.$attributes?.logo || null
     },
-
-    $name(): string | false {
-      if (!(this as any)._.isEmpty(businessReading.$attributes.name)) {
-        return businessReading.$attributes.name
-      }
-      return false
+    $name(): string | null | undefined {
+      return businessReading.$attributes.fantasy_name || null
     }
   }
 })

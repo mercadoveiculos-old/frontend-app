@@ -1,6 +1,7 @@
 <template>
   <div>
-    <nuxt-link to="/n/oficinas-mecanicas/cuiaba-mt/retifica-de-motores-motorama"
+    <nuxt-link
+      to="/n/distribuidores-de-combustiveis/am/sandoval-doeste/deverso-e-alcantara-e-associados"
       >Motoroma</nuxt-link
     >
   </div>

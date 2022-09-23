@@ -12,7 +12,8 @@ export default {
   async asyncData({ redirect, params }) {
     try {
       // const key = params.key
-      const slug = params.pathMatch.split('/')[2] || null
+      const slug = params.pathMatch || null
+
       await businessReading.show({ slug })
     } catch (error) {
       console.log(error)

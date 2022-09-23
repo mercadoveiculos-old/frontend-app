@@ -1,8 +1,8 @@
 import { Module, VuexModule, Action, Mutation } from 'vuex-module-decorators'
 import { $axios } from '@/utils/nuxt-instance'
-import { PageBusinessReading } from '@/models'
+import { BusinessReplica } from '@/models'
 
-const URI = '/v1/business/reading'
+const URI = '/api/v1/replica/business'
 
 interface ShowPayload {
   slug: string
@@ -11,33 +11,28 @@ interface ShowPayload {
 @Module({ name: 'business/reading', stateFactory: true, namespaced: true })
 export default class BusinessReading extends VuexModule {
   // Cria um estado de negócio:
-  private pageBusiness = {} as PageBusinessReading
-
-  // Cria o getter de negócio:
-  get $pageBusiness() {
-    return this.pageBusiness
-  }
+  private attributes = {} as BusinessReplica
 
   // Cria o getter de negócio:
   get $attributes() {
-    return this.pageBusiness.attributes
+    return this.attributes
   }
 
   // Cria o getter de negócio:
   get $images() {
-    return this.pageBusiness.relationships.images
+    return this.attributes.images
   }
 
   @Mutation
-  private UPDATE_PAGE_BUSINESS(pageBusiness: PageBusinessReading) {
-    this.pageBusiness = pageBusiness
+  private UPDATE_PAGE_BUSINESS(attributes: BusinessReplica) {
+    this.attributes = attributes
   }
 
   @Action({ rawError: true })
   public async show({ slug }: ShowPayload) {
     // O método $get já traz desestruturado :D
-    const { data } = await $axios.$get(`${URI}/${slug}/?include=images`)
-    // Atualiza com a mutation o usuário recebido da requisição:
+    const data = await $axios.$get(`${URI}/${slug}`)
+    // Atualiza com a mutation o negócio recebido da requisição:
     this.context.commit('UPDATE_PAGE_BUSINESS', data)
   }
 
