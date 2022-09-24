@@ -41,7 +41,9 @@
 
             <div class="flex items-center gap-3 md:gap-4">
               <BtnCallContactPhoneBusinessDetails :contact="contact" />
-              <BtnWhatsAppContactPhoneBusinessDetails v-if="contact.whatsapp" />
+              <BtnWhatsAppContactPhoneBusinessDetails
+                v-if="contact.whatsapp === 'Y'"
+              />
               <button class="text-link hidden md:block">Copiar</button>
             </div>
           </div>

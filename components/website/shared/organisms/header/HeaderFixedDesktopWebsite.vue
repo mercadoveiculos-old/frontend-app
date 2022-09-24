@@ -16,9 +16,9 @@
         <div class="container flex h-full justify-end lg:grid grid-cols-2">
           <div class="hidden lg:flex items-center h-full mt-1">
             <div class="flex flex-1 flex-col -space-y-2.5">
-              <span class="text-sm font-medium z-50"
-                >MOTORAMA RETÍFICA DE MOTORES</span
-              >
+              <span class="text-sm font-medium z-50">{{
+                $fantasyName | uppercase
+              }}</span>
               <ContactPhoneBusinessDetails
                 :contact="contact"
                 className="flex items-center gap-2 w-6/12 -ml-1"
@@ -62,6 +62,9 @@
 import Vue from 'vue'
 import { screen } from '@/store'
 
+import { businessReading } from '@/store'
+import { PhoneReplica } from '@/models'
+
 export default Vue.extend({
   data() {
     return {
@@ -75,6 +78,13 @@ export default Vue.extend({
       timeOut: ''
     }
   },
+
+  filters: {
+    uppercase(value: string): string {
+      return value.toUpperCase()
+    }
+  },
+
   computed: {
     $showHeader() {
       switch (screen.$component) {
@@ -84,41 +94,55 @@ export default Vue.extend({
         default:
           return screen.$showHeader
       }
+    },
+
+    $fantasyName(): string | null {
+      return businessReading.$attributes.fantasy_name || null
+    },
+
+    $phones(): PhoneReplica | never[] {
+      const phones = businessReading.$phones || null
+      if (phones) return (this as any)._.orderBy(phones, ['position'], ['asc'])
+      return []
     }
   },
 
   watch: {
     $showHeader(valNew, valOld) {
       if (valNew) {
-        if (this.timeOut) {
-          this.showHeader = valOld
-          clearTimeout(this.timeOut)
+        if ((this as any).timeOut) {
+          ;(this as any).showHeader = valOld
+          clearTimeout((this as any).timeOut)
         }
       }
-      this.timeOut = setTimeout(() => (this.showHeader = valNew), 500) as any
+      ;(this as any).timeOut = setTimeout(
+        () => ((this as any).showHeader = valNew),
+        500
+      ) as any
     }
   },
 
   methods: {
-    onScroll(e: any) {
-      if (process.browser) {
-        this.windowTop = (<any>window).top.scrollY || 0
-      }
+    onScroll(): void {
+      if (process.browser)
+        (this as any).windowTop = (<any>window).top.scrollY || 0
     }
   },
 
-  created() {
-    this.$showHeader
+  created(): void {
+    ;(this as any).$showHeader
   },
 
   mounted() {
     if (process.browser) {
-      window.addEventListener('scroll', this.onScroll)
+      window.addEventListener('scroll', (this as any).onScroll)
     }
+
+    console.log((this as any).$phones)
   },
   beforeDestroy() {
     if (process.browser) {
-      window.removeEventListener('scroll', this.onScroll)
+      window.removeEventListener('scroll', (this as any).onScroll)
     }
   }
 })
