@@ -87,7 +87,7 @@ export default Vue.extend({
   filters: {
     filterDay(data: any) {
       const today = moment().format('dddd')
-      if (data.key == today) {
+      if (data.key === today) {
         return 'font-bold text-primary'
       }
       return ''

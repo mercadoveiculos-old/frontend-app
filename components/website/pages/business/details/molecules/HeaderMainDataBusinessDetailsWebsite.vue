@@ -5,7 +5,7 @@
         v-if="$logo"
         class="w-20 md:w-24 bg-white border p-1 md:p-2 rounded-md h-full"
       >
-        <img :src="require(`@/assets/img/${$logo}`)" :alt="$name" />
+        <img :src="require(`@/assets/img/${$logo}`)" :alt="`Logo ${$name}`" />
       </div>
       <h1
         class="flex-1 text-xl md:text-2xl lg:text-3xl font-montserrat font-bold md:font-black uppercase text-primary"
@@ -23,7 +23,7 @@ import { businessReading } from '@/store'
 export default Vue.extend({
   computed: {
     $logo(): string | null | undefined {
-      return businessReading.$attributes?.logo || null
+      return businessReading.$attributes.logo || null
     },
     $name(): string | null | undefined {
       return businessReading.$attributes.fantasy_name || null

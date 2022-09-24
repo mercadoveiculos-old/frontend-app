@@ -7,9 +7,9 @@
     >
       <Modal
         title="Solicitar alteração"
-        classNameModal="w-11/12 md:w-5/12 lg:w-4/12 mx-auto bg-white rounded mt-20 shadow-md"
+        class-name-modal="w-11/12 md:w-5/12 lg:w-4/12 mx-auto bg-white rounded mt-20 shadow-md"
       >
-        <template v-slot:body>
+        <template #body>
           <div class="flex flex-col gap-4 mb-4">
             <NuxtLink to="/app/editar" class="btn-primary" no-rel>
               Sou dono desta empresa

@@ -1,15 +1,16 @@
 <template>
-  <PhoneCallIcon v-if="contact.type === 'fixed'" />
-  <IphoneIcon v-else />
+  <CellPhoneIcon v-if="contact.type === 'cell-phone-number'" />
+  <PhoneCallIcon v-else />
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
+import { PhoneReplica } from '@/models'
 
 export default Vue.extend({
   props: {
     contact: {
-      type: Object,
+      type: Object as PropType<PhoneReplica>,
       required: true
     }
   }

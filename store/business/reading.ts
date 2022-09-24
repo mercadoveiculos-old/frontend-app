@@ -34,6 +34,10 @@ export default class BusinessReading extends VuexModule {
     return this.attributes.payments
   }
 
+  get $phones() {
+    return this.attributes.phones
+  }
+
   get $videos() {
     return this.attributes.videos
   }

@@ -6,7 +6,7 @@
       leave-active-class="animate__animated animate__fadeOut animate__delay-500ms"
     >
       <Modal>
-        <template v-slot:body>
+        <template #body>
           <div class="flex flex-col gap-8 items-center -mt-8 mb-6 flipInY">
             <svg
               width="128"

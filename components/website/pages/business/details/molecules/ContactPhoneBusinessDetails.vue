@@ -33,7 +33,7 @@
           >
             <div
               class="text-lg md:text-xl font-bold text-primary"
-              :class="contact.type === 'fixed' ? 'md:mr-8' : 'md:mr-4'"
+              :class="contact.type === 'phone-number' ? 'md:mr-8' : 'md:mr-4'"
               itemprop="telephone"
             >
               {{ contact.number }}
@@ -52,12 +52,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
+import { PhoneReplica } from '@/models'
+
 import 'animate.css'
 export default Vue.extend({
   props: {
     contact: {
-      type: Object,
+      type: Object as PropType<PhoneReplica>,
       required: true
     },
     className: {
