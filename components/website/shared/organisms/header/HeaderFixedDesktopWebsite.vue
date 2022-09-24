@@ -69,11 +69,7 @@ export default Vue.extend({
   data() {
     return {
       showHeader: true,
-      contact: {
-        type: 'mobile',
-        number: '(65) 9 9999-9999',
-        whatsapp: true
-      },
+      contact: {} as PhoneReplica,
       windowTop: 0,
       timeOut: ''
     }
@@ -138,8 +134,9 @@ export default Vue.extend({
       window.addEventListener('scroll', (this as any).onScroll)
     }
 
-    console.log((this as any).$phones)
+    ;(this as any).contact = (this as any)._.head((this as any).$phones)
   },
+
   beforeDestroy() {
     if (process.browser) {
       window.removeEventListener('scroll', (this as any).onScroll)
