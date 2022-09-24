@@ -16,8 +16,8 @@
         <div class="container flex h-full justify-end lg:grid grid-cols-2">
           <div class="hidden lg:flex items-center h-full mt-1">
             <div class="flex flex-1 flex-col -space-y-2.5">
-              <span class="text-sm font-medium z-50">{{
-                $fantasyName | uppercase
+              <span class="text-sm font-medium z-50 uppercase">{{
+                $fantasyName
               }}</span>
               <ContactPhoneBusinessDetails
                 :contact="contact"
@@ -72,12 +72,6 @@ export default Vue.extend({
       contact: {} as PhoneReplica,
       windowTop: 0,
       timeOut: ''
-    }
-  },
-
-  filters: {
-    uppercase(value: string): string {
-      return value.toUpperCase()
     }
   },
 

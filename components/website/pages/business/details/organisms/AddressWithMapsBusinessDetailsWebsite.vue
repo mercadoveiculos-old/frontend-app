@@ -3,17 +3,21 @@
     <H2BusinessDetailsWebsite title="Endereço" />
     <address class="mt-5">
       <span class="text-xs md:text-sm not-italic"
-        >Av. Irmão Miguel Abib - Centro, Diamantino - MT, 78400-000</span
+        >{{ $address.street }}<span v-show="$address.number">,</span>
+        {{ $address.number }} - {{ $address.neighborhood }},
+        {{ $address.city }} - {{ $address.state_name }},
+        {{ $address.cep }}</span
       >
     </address>
     <div class="w-full h-80 md:h-96 bg-blue-200">
       <!-- <gmapsMap :options="mapOptions" /> -->
-
-      <gmaps-map :options="mapOptions">
-        <gmaps-info-window :options="options">
-          <p>MOTORAMA RETÍFICA DE MOTORES</p>
-        </gmaps-info-window>
-      </gmaps-map>
+      <client-only>
+        <gmaps-map :options="mapOptions">
+          <gmaps-info-window :options="options">
+            <p class="uppercase font-bold text-red-700">{{ $fantasyName }}</p>
+          </gmaps-info-window>
+        </gmaps-map>
+      </client-only>
     </div>
   </Section>
 </template>
@@ -22,6 +26,8 @@
 import Vue from 'vue'
 
 import { gmapsMap, gmapsInfoWindow } from 'x5-gmaps'
+import { businessReading } from '@/store'
+import { AddressReplica } from '@/models'
 
 export default Vue.extend({
   components: {
@@ -31,14 +37,27 @@ export default Vue.extend({
 
   data: () => ({
     options: {
-      position: { lat: -14.4068349, lng: -56.43942209999999 }
+      position: {
+        lat: Number(businessReading.$address.latitude) || null,
+        lng: Number(businessReading.$address.longitude) || null
+      }
     },
     mapOptions: {
-      center: { lat: -14.4068349, lng: -56.43942209999999 },
-      zoom: 18
+      center: {
+        lat: Number(businessReading.$address.latitude) || null,
+        lng: Number(businessReading.$address.longitude) || null
+      },
+      zoom: 16
     }
-  })
+  }),
+  computed: {
+    $fantasyName(): string | null | undefined {
+      return businessReading.$attributes.fantasy_name || null
+    },
+
+    $address(): AddressReplica | never[] {
+      return businessReading.$address || []
+    }
+  }
 })
 </script>
-
-<style scoped></style>

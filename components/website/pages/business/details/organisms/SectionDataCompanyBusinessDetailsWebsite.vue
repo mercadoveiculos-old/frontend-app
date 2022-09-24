@@ -24,14 +24,12 @@
         </Section>
       </client-only>
 
-      <hr />
-
       <!-- Serviços oferecidos -->
-
-      <ServiceOfferedBusinessDetailsWebsite />
       <hr />
-      <!-- Formas de pagamento -->
+      <ServiceOfferedBusinessDetailsWebsite />
 
+      <!-- Formas de pagamento -->
+      <hr v-show="$payments" />
       <PaymentMethodsBusinessDetailsWebsite />
 
       <client-only>
@@ -40,16 +38,53 @@
         />
       </client-only>
 
+      <hr v-show="$images" />
       <GalleryImagesBusinessDetailsWebsite />
-      <hr />
+
       <!-- Vídeos relacionados -->
+      <hr v-show="$videos" />
       <VideosRelatedBusinessDetailsWebsite />
-      <hr />
+
       <!-- Endereço -->
+      <hr />
       <AddressWithMapsBusinessDetailsWebsite />
-      <hr id="learn-more" />
+
+      <hr v-show="$description" id="learn-more" />
       <!-- Saiba mais -->
       <SectionLearnMoreBusinessDetailsWebsite />
     </Article>
   </Section>
 </template>
+
+<script lang="ts">
+import Vue from 'vue'
+import { businessReading } from '@/store'
+import { ImageReplica, PaymentReplica, VideoReplica } from '@/models'
+
+export default Vue.extend({
+  computed: {
+    $images(): ImageReplica | boolean | undefined {
+      const images = Object.entries(businessReading.$images) || null
+      if (images.length > 0) return true
+      return false
+    },
+
+    $videos(): VideoReplica | boolean | undefined {
+      const videos = Object.entries(businessReading.$videos) || null
+      if (videos.length > 0) return true
+      return false
+    },
+
+    $payments(): PaymentReplica | boolean | undefined {
+      const payments = Object.entries(businessReading.$payments) || null
+      if (payments.length > 0) return true
+      return false
+    },
+
+    $description(): string | boolean {
+      if (businessReading.$attributes.description.length > 0) return true
+      return false
+    }
+  }
+})
+</script>
