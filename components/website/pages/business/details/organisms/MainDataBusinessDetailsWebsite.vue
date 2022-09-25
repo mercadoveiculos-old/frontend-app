@@ -16,7 +16,7 @@
     </div>
 
     <!-- Horarios de Atendimento -->
-    <OpeningHoursDataBusinessDetailsWebsite />
+    <ScheduleDataBusinessDetailsWebsite />
 
     <!-- Descricao -->
     <DescriptionDataBusinessDetailsWebsite />

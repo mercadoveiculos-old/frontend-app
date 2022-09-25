@@ -21,6 +21,10 @@ export default class BusinessReading extends VuexModule {
   get $address() {
     return this.attributes.address
   }
+
+  get $schedule() {
+    return this.attributes.schedule
+  }
   
   get $categories() {
     return this.attributes.categories

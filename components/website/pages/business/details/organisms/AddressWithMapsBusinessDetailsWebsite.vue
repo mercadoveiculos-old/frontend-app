@@ -38,14 +38,14 @@ export default Vue.extend({
   data: () => ({
     options: {
       position: {
-        lat: Number(businessReading.$address.latitude) || null,
-        lng: Number(businessReading.$address.longitude) || null
+        lat: Number(businessReading.$address?.latitude) || null,
+        lng: Number(businessReading.$address?.longitude) || null
       }
     },
     mapOptions: {
       center: {
-        lat: Number(businessReading.$address.latitude) || null,
-        lng: Number(businessReading.$address.longitude) || null
+        lat: Number(businessReading.$address?.latitude) || null,
+        lng: Number(businessReading.$address?.longitude) || null
       },
       zoom: 16
     }
