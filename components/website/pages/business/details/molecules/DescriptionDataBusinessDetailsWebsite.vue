@@ -70,7 +70,7 @@ import { businessReading } from '@/store'
 export default Vue.extend({
   filters: {
     cutText(value: string): string {
-      const total = 140
+      const total = 155
       if (value.length > total) {
         return `${value.slice(0, total)} ...`
       }
