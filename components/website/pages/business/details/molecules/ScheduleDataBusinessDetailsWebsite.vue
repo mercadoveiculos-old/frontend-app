@@ -23,14 +23,14 @@
     >
       <div v-if="show" class="w-5/6 md:w-3/6">
         <div
-          v-for="data in newScheduleData()"
+          v-for="data in newMappedSchedule()"
           :key="data.key"
           class="flex justify-between md:flex-none md:grid md:grid-cols-2 gap-0 text-base mb-5 md:mb-3 font-normal text-secondary"
         >
           <div :class="data | filterDay">
             {{ data.day }}
           </div>
-          <template v-if="data.closed === true">
+          <template v-if="data.opened === false">
             <div
               class="text-red-main-700 justify-self-end md:justify-self-start"
               :class="data | filterDay"
@@ -44,8 +44,15 @@
               class="justify-self-end md:justify-self-start"
             >
               <!-- {{ data.hour }}&ndash;{{ data.close }} -->
-              <span v-for="hour in data.hours" class="flex flex-row">
-                {{ hour.open }} &ndash; {{ hour.close }}
+              <span v-for="hour in data.hours" class="flex flex-col">
+                <template v-if="typeof hour === 'object'">
+                  <template v-for="(h, index) in hour">
+                    <br v-if="index > 1" />
+                    {{ h.open }}
+                    <template v-if="index > 0">&ndash;</template>
+                    {{ h.close }}
+                  </template>
+                </template>
               </span>
             </div>
           </template>
@@ -153,7 +160,7 @@ export default Vue.extend({
                   .filter((element: any) => element[0] === key)
                   .map((item) => {
                     if (typeof item === 'object') {
-                      return item[1] ?? null
+                      return { ...item }
                     }
                   }),
                 day: day
@@ -202,13 +209,12 @@ export default Vue.extend({
       return toSort
     },
 
-    newScheduleData() {
+    newMappedSchedule() {
       const scheduleDataWeek = this.scheduleDataWeek
-
       const dataList = scheduleDataWeek.reduce((acc: any, element: any) => {
         return element
       }, [])
-
+      console.log(dataList)
       return dataList
 
       this.sortArrayHours(dataList).filter((data: any) => {
