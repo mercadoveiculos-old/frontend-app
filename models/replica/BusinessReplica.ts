@@ -6,7 +6,7 @@ import {
   PaymentReplica,
   PhoneReplica,
   VideoReplica,
-  SheduleReplica,
+  ScheduleReplica,
   UtilReplica,
   TagReplica
 } from '@/models'
@@ -28,7 +28,7 @@ export interface BusinessReplica {
   images: ImageReplica
   payments: PaymentReplica
   phones: PhoneReplica
-  schedule: SheduleReplica
+  schedule: ScheduleReplica
   tags: TagReplica
   utils: UtilReplica
   videos: VideoReplica

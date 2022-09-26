@@ -1,6 +1,16 @@
 import { Module, VuexModule, Action, Mutation } from 'vuex-module-decorators'
 import { $axios } from '@/utils/nuxt-instance'
-import { BusinessReplica } from '@/models'
+import { 
+  AddressReplica, 
+  BusinessReplica, 
+  CategoryReplica, 
+  ImageReplica, 
+  PaymentReplica, 
+  PhoneReplica, 
+  ScheduleReplica, 
+  TagReplica, 
+  VideoReplica 
+} from '@/models'
 
 const URI = '/api/v1/replica/business'
 
@@ -18,35 +28,35 @@ export default class BusinessReading extends VuexModule {
     return this.attributes
   }
 
-  get $address() {
+  get $address(): AddressReplica {
     return this.attributes.address
   }
 
-  get $schedule() {
+  get $schedule() : ScheduleReplica {
     return this.attributes.schedule
   }
   
-  get $categories() {
+  get $categories(): CategoryReplica {
     return this.attributes.categories
   }
 
-  get $tags() {
+  get $tags(): TagReplica {
     return this.attributes.tags
   }
 
-  get $images() {
+  get $images(): ImageReplica {
     return this.attributes.images
   }
 
-  get $payments() {
+  get $payments(): PaymentReplica {
     return this.attributes.payments
   }
 
-  get $phones() {
+  get $phones(): PhoneReplica {
     return this.attributes.phones
   }
 
-  get $videos() {
+  get $videos(): VideoReplica {
     return this.attributes.videos
   }
 

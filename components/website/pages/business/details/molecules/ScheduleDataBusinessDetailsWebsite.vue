@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-2 mt-6">
+  <div v-show="$shedule" class="flex gap-2 mt-6">
     <figure>
       <svg
         width="24"
@@ -23,7 +23,7 @@
     >
       <div v-if="show" class="w-5/6 md:w-3/6">
         <div
-          v-for="data in scheduleDataSort"
+          v-for="data in newScheduleData()"
           :key="data.key"
           class="flex justify-between md:flex-none md:grid md:grid-cols-2 gap-0 text-base mb-5 md:mb-3 font-normal text-secondary"
         >
@@ -43,7 +43,10 @@
               :class="data | filterDay"
               class="justify-self-end md:justify-self-start"
             >
-              {{ data.open }}&ndash;{{ data.close }}
+              <!-- {{ data.hour }}&ndash;{{ data.close }} -->
+              <span v-for="hour in data.hours" class="flex flex-row">
+                {{ hour.open }} &ndash; {{ hour.close }}
+              </span>
             </div>
           </template>
         </div>
@@ -51,21 +54,26 @@
     </transition>
 
     <div v-show="!show">
-      <button class="flex items-center gap-2" @click.prevent="showHours()">
-        <!-- <span class="text-sm font-medium text-secondary-main-normal">
-        Aberto 24 Horas
-      </span> -->
+      <template v-if="alwaysOpen">
         <span class="text-sm font-medium text-secondary-main-normal">
-          Fecha em breve
+          Aberto 24 Horas
         </span>
+      </template>
 
-        <span class="text-sm font-normal text-primary">
-          &sdot; 23:00 &sdot; abre sáb. às 07:00
-        </span>
-        <span>
-          <ArrowDropDownIcon />
-        </span>
-      </button>
+      <template v-else-if="selectedTime">
+        <button class="flex items-center gap-2" @click.prevent="showHours()">
+          <span class="text-sm font-medium text-secondary-main-normal">
+            Fecha em breve
+          </span>
+
+          <span class="text-sm font-normal text-primary">
+            &sdot; 23:00 &sdot; abre sáb. às 07:00
+          </span>
+          <span>
+            <ArrowDropDownIcon />
+          </span>
+        </button>
+      </template>
     </div>
   </div>
 </template>
@@ -74,110 +82,101 @@
 import Vue from 'vue'
 
 import { businessReading } from '@/store'
-import { SheduleReplica } from '@/models'
+import { ScheduleReplica } from '@/models'
+import { ScheduleData } from '@/types'
+import { daysOfWeek } from '@/utils/data/days-week'
 
 import moment from 'moment'
 
-interface SheduleDay {
-  key: string
-  closed: boolean
-  day: string
-}
-
-interface SheduleHour {
-  open: string
-  close: string
-}
-
-interface SheduleData {
-  key: string
-  closed: boolean
-  day: string
-  open: string
-  close: string
-}
-
 export default Vue.extend({
+  data() {
+    return {
+      alwaysOpen: false,
+      selectedTime: false,
+      closed: 'Fechado',
+      scheduleDataSort: [] as any[],
+      scheduleDataWeek: [] as any[],
+      show: false
+    }
+  },
+
   filters: {
     filterDay(data: any) {
       const today = moment().format('dddd')
-      if (data.key === today) {
-        return 'font-bold text-primary'
-      }
+      if (data.key === today) return 'font-bold text-primary'
       return ''
-    }
-  },
-  data() {
-    return {
-      closed: 'Fechado',
-      scheduleDataSort: [] as SheduleData[],
-      scheduleDataWeek: [] as SheduleData[],
-      show: false,
-
-      dayWeek: [
-        {
-          key: 'sunday',
-          day: 'domingo'
-        },
-        {
-          key: 'monday',
-          day: 'segunda-feira'
-        },
-        {
-          key: 'tuesday',
-          day: 'terça-feira'
-        },
-        {
-          key: 'wednesday',
-          day: 'quarta-feira'
-        },
-        {
-          key: 'thursday',
-          day: 'quinta-feira'
-        },
-        {
-          key: 'friday',
-          day: 'sexta-feira'
-        },
-        {
-          key: 'saturday',
-          day: 'sábado'
-        }
-      ]
     }
   },
 
   computed: {
-    $shedule(): SheduleReplica | null {
+    $shedule(): ScheduleReplica | null {
       return businessReading.$schedule || null
     }
   },
 
   methods: {
-    sheduleData() {
-      const self = this
+    scheduleNormamizeSelectedTime(schedule_days: any) {
+      const schedule = Object.entries(schedule_days)
+
+      const weeks = daysOfWeek.reduce((acc: any, item) => {
+        return !acc[item.key]
+          ? { ...acc, [item.key]: [item] }
+          : { ...acc, [item.key]: [...acc[item.key], item] }
+      }, [])
+
+      const dataMapped = schedule.map(function (item: any) {
+        return [
+          daysOfWeek
+            .filter((day) => day.key === item[0])
+            .map((item) => item.key)
+            .join(','),
+          ...(item[1] ?? [])
+        ]
+      })
+
+      const weekData = Object.entries(weeks)
+      const payload = Object.entries([]) as any[]
+
+      weekData.forEach((days) => {
+        days.map((items: any) => {
+          Array(items).map((item) => {
+            if (typeof item === 'object') {
+              const key = item[0]['key'] ?? ''
+              const day = item[0]['day'] ?? ''
+
+              const dataPayload: any = {
+                key: key,
+                opened: dataMapped.some(
+                  (item) => item[0] === days.reduce((item) => item)
+                ),
+                hours: dataMapped
+                  .filter((element: any) => element[0] === key)
+                  .map((item) => {
+                    if (typeof item === 'object') {
+                      return item[1] ?? null
+                    }
+                  }),
+                day: day
+              }
+              payload.push(dataPayload)
+            }
+          })
+        })
+      })
+      this.scheduleDataWeek.push(payload)
+    },
+
+    scheduleDataMap() {
       if (this.$shedule) {
         if (this.$shedule.data.length > 0) {
           const data = JSON.parse(this.$shedule.data)
-          const schedule = Object.entries(data.schedule_days)
-
-          schedule.map(function (item: any) {
-            const week = String(
-              self.dayWeek
-                .filter((day) => day.key === item[0])
-                .map((item) => item.day)
-            )
-
-            const payload = {
-              key: String(item[0]),
-              closed: false,
-              day: week,
-              open: '07:00',
-              close: '12:00'
-            }
-
-            self.scheduleDataWeek.push(payload)
-          })
+          const schedule = data.schedule ? data.schedule : null
+          if (schedule === 'always_open') {
+            this.alwaysOpen = true
+          } else if (schedule === 'selected_time') {
+            this.selectedTime = true
+            this.scheduleNormamizeSelectedTime(data.schedule_days)
+          }
         }
       }
     },
@@ -188,41 +187,40 @@ export default Vue.extend({
     sortArrayHours(toSort: any) {
       const today = moment().format('dddd')
 
-      let list = [
-        'sunday',
-        'monday',
-        'tuesday',
-        'wednesday',
-        'thursday',
-        'friday',
-        'saturday'
-      ]
+      let listDay = daysOfWeek.reduce((acc: any, item) => {
+        acc.push(item.key)
+        return acc
+      }, [])
 
-      const before = list.splice(0, list.indexOf(today))
-      list = list.concat(before)
-      return list.filter((item) => toSort.includes(item))
+      const before = listDay.splice(0, listDay.indexOf(today))
+      listDay = listDay.concat(before)
+
+      console.log(listDay)
+
+      // return listDay.filter((item: any) => toSort.includes(item))
+      console.log(toSort)
+      return toSort
     },
 
-    listNewArrayHours() {
+    newScheduleData() {
       const scheduleDataWeek = this.scheduleDataWeek
-      const dataList = scheduleDataWeek.map((data: any) => {
-        return data.key
-      })
+
+      const dataList = scheduleDataWeek.reduce((acc: any, element: any) => {
+        return element
+      }, [])
+
+      return dataList
+
       this.sortArrayHours(dataList).filter((data: any) => {
-        scheduleDataWeek.filter((obj) => {
-          if (obj.key == data) {
-            this.scheduleDataSort.push(obj)
-          }
+        scheduleDataWeek.filter((obj: any) => {
+          if (obj.key == data) this.scheduleDataSort.push(obj)
         })
       })
     }
   },
 
   mounted() {
-    console.table(this.scheduleDataWeek)
-    console.table(this.sheduleData())
-
-    this.listNewArrayHours()
+    this.scheduleDataMap()
   }
 })
 </script>

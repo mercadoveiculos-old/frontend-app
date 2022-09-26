@@ -18,7 +18,7 @@ export default {
     } catch (error) {
       console.log(error)
       // Página de erro 404:
-      return redirect('/404')
+      // return redirect('/404')
     }
   },
 

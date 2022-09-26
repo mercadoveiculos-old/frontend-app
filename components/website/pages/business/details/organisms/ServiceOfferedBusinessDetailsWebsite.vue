@@ -1,7 +1,7 @@
 <template>
   <Section>
     <H2BusinessDetailsWebsite title="Serviços oferecidos" />
-    <div class="flex gap-4 my-7">
+    <div class="flex gap-4 my-7 flex-wrap">
       <CategoryServiceOfferedServiceBusinessWebsite
         v-for="(category, index) in $categories"
         :key="index"
