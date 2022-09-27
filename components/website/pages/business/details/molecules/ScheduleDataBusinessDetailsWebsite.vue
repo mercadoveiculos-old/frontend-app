@@ -101,7 +101,6 @@ export default Vue.extend({
       alwaysOpen: false,
       selectedTime: false,
       closed: 'Fechado',
-      scheduleDataSort: [] as any[],
       scheduleDataWeek: [] as any[],
       show: false
     }
@@ -191,37 +190,30 @@ export default Vue.extend({
     showHours() {
       this.show = true
     },
-    sortArrayHours(toSort: any) {
+    sortArrayDayWeek() {
       const today = moment().format('dddd')
-
       let listDay = daysOfWeek.reduce((acc: any, item) => {
         acc.push(item.key)
         return acc
       }, [])
 
-      const before = listDay.splice(0, listDay.indexOf(today))
-      listDay = listDay.concat(before)
-
-      console.log(listDay)
-
-      // return listDay.filter((item: any) => toSort.includes(item))
-      console.log(toSort)
-      return toSort
+      const before = listDay.splice(0, listDay.indexOf(today.toLowerCase()))
+      return listDay.concat(before)
     },
 
     newMappedSchedule() {
+      const schedule = [] as ScheduleData[]
       const scheduleDataWeek = this.scheduleDataWeek
-      const dataList = scheduleDataWeek.reduce((acc: any, element: any) => {
+      const dataSchedule = scheduleDataWeek.reduce((acc: any, element: any) => {
         return element
       }, [])
-      console.log(dataList)
-      return dataList
 
-      this.sortArrayHours(dataList).filter((data: any) => {
-        scheduleDataWeek.filter((obj: any) => {
-          if (obj.key == data) this.scheduleDataSort.push(obj)
+      this.sortArrayDayWeek().map((day: any) => {
+        dataSchedule.map((data: any) => {
+          if (data.key === day) schedule.push(data)
         })
       })
+      return schedule
     }
   },
 
