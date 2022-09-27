@@ -169,12 +169,16 @@ export default Vue.extend({
       if (!this._.isEmpty(firstSchedule?.hours)) {
         const hours = Object.entries((firstSchedule as any).hours)
         const hourData = new ScheduleExtractHours(hours)
+        hourData.hourOne = 1
+        hourData.hourTwo = 2
         hourData.make()
         this.hourClose = hourData.hourClose
 
+        console.log(`Fecha a tarde em: ${hourData.hourClose}`)
+
         const todayDate = new Date().toISOString().slice(0, 10)
-        const timeEnd = `${todayDate}T14:40:00`
-        // const timeEnd = `${todayDate}T${hourData.hourClose}:00`
+        // const timeEnd = `${todayDate}T14:40:00`
+        const timeEnd = `${todayDate}T${hourData.hourClose}:00`
 
         const diff_ms = moment().diff(moment(timeEnd))
         const dur_obj = moment.duration(diff_ms)
@@ -197,12 +201,17 @@ export default Vue.extend({
         console.log(hours)
 
         const hourData = new ScheduleExtractHours(hours)
+        hourData.hourOne = 2
+        hourData.hourTwo = 1
+        hourData.lunchTime
         hourData.make()
 
         const lunchTimeOpen = hourData.hourOpen
         const lunchTimeClose = hourData.hourClose
 
-        console.log(lunchTimeOpen, lunchTimeClose)
+        console.log(
+          `Fecha para almoço em: ${lunchTimeClose}, Abre depois as: ${lunchTimeOpen}`
+        )
       }
     },
 
@@ -216,8 +225,14 @@ export default Vue.extend({
         this.abbrDay = String(lastSchedule?.day.slice(0, 3))
         const hours = Object.entries((lastSchedule as any).hours)
         const hourData = new ScheduleExtractHours(hours)
+        hourData.hourOne = 1
+        hourData.hourTwo = 1
         hourData.make()
         this.hourOpen = hourData.hourOpen
+
+        // console.log(hourData.hourOpen)
+
+        console.log(`Abre no outro dia - ${hourData.hourOpen}`)
       }
     },
 
