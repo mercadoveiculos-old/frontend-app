@@ -1,6 +1,6 @@
 import { ScheduleHours } from "@/types/replica/ScheduleHours"
 
-export interface ScheduleData {
+export type ScheduleData = {
   key: string
   opened: boolean
   hours: ScheduleHours
