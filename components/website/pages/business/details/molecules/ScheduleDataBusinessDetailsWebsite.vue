@@ -102,7 +102,8 @@ export default Vue.extend({
       selectedTime: false,
       closed: 'Fechado',
       scheduleDataWeek: [] as any[],
-      show: false
+      show: false,
+      shedule: ''
     }
   },
 
@@ -121,16 +122,20 @@ export default Vue.extend({
   },
 
   methods: {
-    scheduleNormamizeSelectedTime(schedule_days: any) {
-      const schedule = Object.entries(schedule_days)
+    showHours() {
+      this.show = true
+    },
 
-      const weeks = daysOfWeek.reduce((acc: any, item) => {
+    daysOfWeekReduce() {
+      return daysOfWeek.reduce((acc: any, item) => {
         return !acc[item.key]
           ? { ...acc, [item.key]: [item] }
           : { ...acc, [item.key]: [...acc[item.key], item] }
       }, [])
+    },
 
-      const dataMapped = schedule.map(function (item: any) {
+    daysOfWeekMap(schedule: any) {
+      return schedule.map(function (item: any) {
         return [
           daysOfWeek
             .filter((day) => day.key === item[0])
@@ -139,10 +144,13 @@ export default Vue.extend({
           ...(item[1] ?? [])
         ]
       })
+    },
 
-      const weekData = Object.entries(weeks)
-      const payload = Object.entries([]) as any[]
-
+    extractedForEachMountSchedule(
+      weekData: [string, unknown][],
+      dataMapped: any,
+      payload: any[]
+    ) {
       weekData.forEach((days) => {
         days.map((items: any) => {
           Array(items).map((item) => {
@@ -153,11 +161,11 @@ export default Vue.extend({
               const dataPayload: any = {
                 key: key,
                 opened: dataMapped.some(
-                  (item) => item[0] === days.reduce((item) => item)
+                  (item: any) => item[0] === days.reduce((item) => item)
                 ),
                 hours: dataMapped
                   .filter((element: any) => element[0] === key)
-                  .map((item) => {
+                  .map((item: any) => {
                     if (typeof item === 'object') {
                       return { ...item }
                     }
@@ -170,6 +178,17 @@ export default Vue.extend({
         })
       })
       this.scheduleDataWeek.push(payload)
+    },
+
+    scheduleNormamizeSelectedTime(schedule_days: any) {
+      const schedule = Object.entries(schedule_days)
+      const dataMapped = this.daysOfWeekMap(schedule)
+      const weeks = this.daysOfWeekReduce()
+
+      const weekData = Object.entries(weeks)
+      const payload = Object.entries([]) as any[]
+
+      this.extractedForEachMountSchedule(weekData, dataMapped, payload)
     },
 
     scheduleDataMap() {
@@ -187,9 +206,6 @@ export default Vue.extend({
       }
     },
 
-    showHours() {
-      this.show = true
-    },
     sortArrayDayWeek() {
       const today = moment().format('dddd')
       let listDay = daysOfWeek.reduce((acc: any, item) => {
