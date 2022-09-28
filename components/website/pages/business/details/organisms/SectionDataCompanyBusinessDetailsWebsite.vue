@@ -64,24 +64,28 @@ import { ImageReplica, PaymentReplica, VideoReplica } from '@/models'
 export default Vue.extend({
   computed: {
     $images(): ImageReplica | boolean | undefined {
+      if (this._.isEmpty(businessReading?.$images)) return false
       const images = Object.entries(businessReading.$images) || null
       if (images.length > 0) return true
       return false
     },
 
     $videos(): VideoReplica | boolean | undefined {
+      if (this._.isEmpty(businessReading?.$videos)) return false
       const videos = Object.entries(businessReading.$videos) || null
       if (videos.length > 0) return true
       return false
     },
 
     $payments(): PaymentReplica | boolean | undefined {
+      if (this._.isEmpty(businessReading?.$payments)) return false
       const payments = Object.entries(businessReading.$payments) || null
       if (payments.length > 0) return true
       return false
     },
 
     $description(): string | boolean {
+      if (this._.isEmpty(businessReading?.$attributes.description)) return false
       if (businessReading.$attributes.description.length > 0) return true
       return false
     }

@@ -69,28 +69,23 @@
 
       <template v-else-if="selectedTime">
         <button class="flex items-center gap-2" @click.prevent="showHours()">
-          <template v-if="statusSchedule === 'closed'">
-            <span class="text-sm font-medium text-secondary-main-normal">
-              {{ closed }}
-            </span>
-          </template>
-          <template v-else-if="statusSchedule === 'soon'">
-            <span class="text-sm font-medium text-secondary-main-normal">
-              Fecha em breve
-            </span>
-          </template>
-          <template v-else>
-            <span class="text-sm font-medium text-green-600">
-              Aberto agora
-            </span>
-          </template>
+          <StatusScheduleDataBusinessDetailsWebsite :status="statusSchedule" />
 
           <span
             v-if="statusSchedule !== 'open'"
             class="text-sm font-normal text-primary"
           >
-            &sdot; {{ hourClose || '' }} &sdot; abre {{ abbrDay }}. às
-            {{ hourOpen || '' }}
+            <template v-if="statusSchedule === 'closed_lunch'">
+              &sdot; retorna às {{ lunchTimeOpen || '' }}
+            </template>
+
+            <template v-else-if="statusSchedule !== 'closed'">
+              &sdot; {{ hourClose || '' }}
+            </template>
+
+            <template v-else>
+              &sdot; abre {{ abbrDay }}. às {{ hourOpen || '' }}
+            </template>
           </span>
           <span>
             <ArrowDropDownIcon />
@@ -103,14 +98,17 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import moment from 'moment'
 
 import { businessReading } from '@/store'
 import { ScheduleReplica } from '@/models'
 import { ScheduleData } from '@/types'
 import { daysOfWeek } from '@/utils/data/days-week'
 import ScheduleExtractHours from '@/utils/extract-hours-schedule'
+import { toNumber } from 'lodash'
 
-import moment from 'moment'
+const numberPattern = /\d+/g
+const now = moment().format('HHmm')
 
 export default Vue.extend({
   data() {
@@ -172,25 +170,26 @@ export default Vue.extend({
         hourData.hourOne = 1
         hourData.hourTwo = 2
         hourData.make()
-        this.hourClose = hourData.hourClose
 
-        console.log(`Fecha a tarde em: ${hourData.hourClose}`)
+        const close = hourData.hourClose
+        this.hourClose = close
 
-        const todayDate = new Date().toISOString().slice(0, 10)
-        // const timeEnd = `${todayDate}T14:40:00`
-        const timeEnd = `${todayDate}T${hourData.hourClose}:00`
+        const todayDate = moment().format().slice(0, 11)
+        const timeEnd = `${todayDate}${close}:00-04:00`
 
-        const diff_ms = moment().diff(moment(timeEnd))
-        const dur_obj = moment.duration(diff_ms)
+        const diffMs = moment().diff(moment(timeEnd))
+        const durObj = moment.duration(diffMs)
 
-        if (dur_obj.asHours() >= 0.01) {
-          this.statusSchedule = 'closed'
-        } else if (dur_obj.asHours() >= -1.0) {
+        if (durObj.asHours() < -0.01) {
           this.statusSchedule = 'soon'
         } else {
-          this.statusSchedule = 'open'
+          const close = this._.toNumber(
+            hourData.hourClose.match(numberPattern).join('')
+          )
+          if (this._.toNumber(now) > close) {
+            this.statusSchedule = 'closed'
+          }
         }
-        console.log(dur_obj.asHours())
       }
     },
 
@@ -198,7 +197,6 @@ export default Vue.extend({
       if (!this._.isEmpty(data?.hours)) {
         this.abbrDay = String(data?.day.slice(0, 3))
         const hours = Object.entries((data as any).hours)
-        console.log(hours)
 
         const hourData = new ScheduleExtractHours(hours)
         hourData.hourOne = 2
@@ -209,9 +207,18 @@ export default Vue.extend({
         const lunchTimeOpen = hourData.hourOpen
         const lunchTimeClose = hourData.hourClose
 
-        console.log(
-          `Fecha para almoço em: ${lunchTimeClose}, Abre depois as: ${lunchTimeOpen}`
+        const open = this._.toNumber(
+          lunchTimeOpen.match(numberPattern).join('')
         )
+        const close = this._.toNumber(
+          lunchTimeClose.match(numberPattern).join('')
+        )
+
+        if (this._.toNumber(now) > open && this._.toNumber(now) < close) {
+          this.statusSchedule = 'closed_lunch'
+          this.lunchTimeOpen = lunchTimeOpen
+          this.lunchTimeClose = lunchTimeClose
+        }
       }
     },
 
@@ -229,10 +236,6 @@ export default Vue.extend({
         hourData.hourTwo = 1
         hourData.make()
         this.hourOpen = hourData.hourOpen
-
-        // console.log(hourData.hourOpen)
-
-        console.log(`Abre no outro dia - ${hourData.hourOpen}`)
       }
     },
 
