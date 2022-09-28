@@ -24,7 +24,7 @@
       <div v-if="showHourSchedule" class="w-5/6 md:w-3/6">
         <div
           v-for="(data, index) in finalMapSchedule"
-          :key="data.key"
+          :key="index"
           class="flex justify-between md:flex-none md:grid md:grid-cols-2 gap-0 text-base mb-5 md:mb-3 font-normal text-secondary"
         >
           <div :class="data | filterDay">
@@ -56,10 +56,10 @@
               <!-- {{ data.hour }}&ndash;{{ data.close }} -->
               <span v-for="hour in data.hours" class="flex flex-col">
                 <template v-if="typeof hour === 'object'">
-                  <template v-for="(h, index) in hour">
-                    <br v-if="index > 1" />
+                  <template v-for="(h, i) in hour">
+                    <br v-if="i > 1" />
                     {{ h.open }}
-                    <template v-if="index > 0">&ndash;</template>
+                    <template v-if="i > 0">&ndash;</template>
                     {{ h.close }}
                   </template>
                 </template>
@@ -93,9 +93,9 @@
             enter-active-class="animate__animated animate__bounceIn animate__delay-200ms"
             leave-active-class="animate__animated animate__bounceOut animate__delay-200ms"
           >
-            <div v-if="showDaysSchedule" class="w-full">
+            <div v-if="showDaysSchedule">
               <div
-                v-for="(data, index) in mappedDaysSchedule"
+                v-for="data in mappedDaysSchedule"
                 :key="data.key"
                 class="text-base font-semibold mb-5 md:mb-3 text-secondary"
               >
@@ -154,7 +154,7 @@ const now = moment().format('HHmm')
 export default Vue.extend({
   data() {
     return {
-      finalMapSchedule: {},
+      finalMapSchedule: [] as any[],
       display: true,
       displaySchedule: '',
       closed: 'Fechado',
@@ -409,10 +409,8 @@ export default Vue.extend({
       const schedule = Object.entries(schedule_days)
       const dataMapped = this._daysOfWeekMap(schedule)
       const weeks = this._daysOfWeekReduce()
-
       const weekData = Object.entries(weeks)
       const payload = Object.entries([]) as any[]
-
       this._extractedForEachMountSchedule(weekData, dataMapped, payload)
     },
 
@@ -431,7 +429,7 @@ export default Vue.extend({
   mounted() {
     this.init()
 
-    const finalMapSchedule = this.newArrayMappedSchedule()
+    const finalMapSchedule = this.newArrayMappedSchedule() as any[]
     this.finalMapSchedule = finalMapSchedule
     console.log(finalMapSchedule)
     // this.headScheduleNow()
