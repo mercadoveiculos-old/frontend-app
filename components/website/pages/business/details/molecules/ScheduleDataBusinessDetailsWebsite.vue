@@ -83,14 +83,15 @@
             Somente com hora marcada
           </span>
           <span>
-            <ArrowDropDownIcon />
+            <ArrowDropRigth class="ml-2" v-if="showDaysSchedule" />
+            <ArrowDropDownIcon v-else />
           </span>
         </button>
         <div class="w-full mt-4">
           <transition
             name="fade"
             enter-active-class="animate__animated animate__bounceIn animate__delay-200ms"
-            leave-active-class="animate__animated animate__bounceIn animate__delay-200ms"
+            leave-active-class="animate__animated animate__bounceOut animate__delay-200ms"
           >
             <div v-if="showDaysSchedule" class="w-full">
               <div
@@ -212,8 +213,7 @@ export default Vue.extend({
     },
 
     showWeekDays() {
-      this.display = false
-      this.showDaysSchedule = true
+      this.showDaysSchedule = !this.showDaysSchedule
     },
 
     newArrayMappedSchedule() {
