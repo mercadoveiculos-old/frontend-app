@@ -53,7 +53,6 @@
               :class="data | filterDay"
               class="justify-self-end md:justify-self-start"
             >
-              <!-- {{ data.hour }}&ndash;{{ data.close }} -->
               <span v-for="hour in data.hours" class="flex flex-col">
                 <template v-if="typeof hour === 'object'">
                   <template v-for="(h, i) in hour">
@@ -119,16 +118,14 @@
           class="text-sm font-normal text-primary"
         >
           <template v-if="statusSchedule === 'closed_lunch'">
-            &sdot; retorna às {{ lunchTimeOpen || '' }}
+            &sdot; retorna às {{ lunchTimeOpen }}
           </template>
 
           <template v-else-if="statusSchedule !== 'closed'">
-            &sdot; {{ hourClose || '' }}
+            &sdot; {{ hourClose }}
           </template>
 
-          <template v-else>
-            &sdot; abre {{ abbrDay }}. às {{ hourOpen || '' }}
-          </template>
+          <template> &sdot; abre {{ abbrDay }}. às {{ hourOpen }} </template>
         </span>
         <span>
           <ArrowDropDownIcon />
@@ -146,7 +143,7 @@ import { businessReading } from '@/store'
 import { ScheduleReplica } from '@/models'
 import { ScheduleData } from '@/types'
 import { daysOfWeek } from '@/utils/data/days-week'
-import ScheduleExtractHours from '@/utils/extract-hours-schedule'
+import { ExtractHoursToday } from '@/utils/extract-hours-schedule'
 
 const numberPattern = /\d+/g
 const now = moment().format('HHmm')
@@ -154,7 +151,7 @@ const now = moment().format('HHmm')
 export default Vue.extend({
   data() {
     return {
-      finalMapSchedule: [] as any[],
+      finalMapSchedule: {} as ScheduleData,
       display: true,
       displaySchedule: '',
       closed: 'Fechado',
@@ -216,7 +213,7 @@ export default Vue.extend({
       this.showDaysSchedule = !this.showDaysSchedule
     },
 
-    newArrayMappedSchedule() {
+    newArrayScheduleMap() {
       const scheduleDataWeek = this.scheduleDataWeek
       const dataSchedule = scheduleDataWeek.reduce((acc: any, element: any) => {
         return element
@@ -234,95 +231,81 @@ export default Vue.extend({
     },
 
     headScheduleNow() {
-      console.log(this.finalMapSchedule)
-    },
+      // http://localhost:3000/n/comercio-de-lonas/ms/beltrao-do-norte/delvalle-comercial-ltda
+      // http://localhost:3000/n/personalizacao-automotiva/df/valdez-do-leste/aranda-comercial-ltda-1
 
-    headScheduleNow_2() {
-      console.log('headScheduleNow', this.newArrayMappedSchedule())
+      const schedule = this.finalMapSchedule
+      const firstSchedule = this._.head(schedule as any) as ScheduleData
 
-      // const firstSchedule = this._.head(this.newArrayMappedSchedule())
+      if (!this._.isEmpty(firstSchedule.hours)) {
+        try {
+          const hours = firstSchedule.hours
 
-      // console.log('firstSchedule', firstSchedule)
+          const hourToday = new ExtractHoursToday(hours)
+          hourToday.hourClose()
 
-      // if (!this._.isEmpty(firstSchedule?.hours)) {
-      //   const hours = Object.entries((firstSchedule as any).hours)
+          const hourClose = hourToday.close
+          this.hourClose = hourClose
 
-      //   const hourData = new ScheduleExtractHours(hours)
-      //   hourData.hourOne = 1
-      //   hourData.hourTwo = 2
-      //   hourData.make()
+          const todayDate = moment().format().slice(0, 11)
+          const timeEnd = `${todayDate}${hourClose}:00-04:00`
 
-      //   const hourClose = hourData.hourClose
+          const diffMs = moment().diff(moment(timeEnd))
+          const durObj = moment.duration(diffMs)
 
-      //   this.hourClose = hourClose
+          const soon = durObj.asHours()
 
-      //   const todayDate = moment().format().slice(0, 11)
-      //   const timeEnd = `${todayDate}${hourClose}:00-04:00`
-
-      //   const diffMs = moment().diff(moment(timeEnd))
-      //   const durObj = moment.duration(diffMs)
-
-      //   if (durObj.asHours() < -0.01) {
-      //     this.statusSchedule = 'soon'
-      //   } else {
-      //     const close = this._.toNumber(hourClose.match(numberPattern).join(''))
-      //     if (this._.toNumber(now) > close) {
-      //       this.statusSchedule = 'closed'
-      //     }
-      //   }
-      // }
-    },
-
-    _lunchTime(data: any) {
-      if (!this._.isEmpty(data?.hours)) {
-        this.abbrDay = String(data?.day.slice(0, 3))
-        const hours = Object.entries((data as any).hours)
-
-        const hourData = new ScheduleExtractHours(hours)
-        hourData.hourOne = 2
-        hourData.hourTwo = 1
-        hourData.lunchTime
-        hourData.make()
-
-        const lunchTimeOpen = hourData.hourOpen
-        const lunchTimeClose = hourData.hourClose
-
-        const open = this._.toNumber(
-          lunchTimeOpen.match(numberPattern).join('')
-        )
-        const close = this._.toNumber(
-          lunchTimeClose.match(numberPattern).join('')
-        )
-
-        if (this._.toNumber(now) > open && this._.toNumber(now) < close) {
-          this.statusSchedule = 'closed_lunch'
-          this.lunchTimeOpen = lunchTimeOpen
-          this.lunchTimeClose = lunchTimeClose
+          if (soon > -1.0 && soon < -0.01) {
+            this.statusSchedule = 'soon'
+          } else {
+            const closeNumber = this._.toNumber(
+              hourClose.match(numberPattern).join('')
+            )
+            if (this._.toNumber(now) > closeNumber) {
+              this.statusSchedule = 'closed'
+            }
+          }
+        } catch (error) {
+          console.log(error)
         }
       }
     },
 
-    lastSchedule2() {
-      console.log(this.finalMapSchedule)
+    lastSchedule() {
+      const schedule = this.finalMapSchedule
+      const talkMapped = this._.take(schedule as any, 2)
+      const lastSchedule = this._.last(talkMapped) as ScheduleData
+      if (!this._.isEmpty(lastSchedule.hours)) {
+        // this._lunchTime(this._.head(talkMapped))
+
+        this.abbrDay = String(lastSchedule.day.slice(0, 3))
+        const hours = lastSchedule.hours
+
+        const hourToday = new ExtractHoursToday(hours)
+        hourToday.hourOpen()
+        this.hourOpen = hourToday.open
+      }
     },
 
-    lastSchedule_2() {
-      console.log('lastSchedule', this.newArrayMappedSchedule())
-
-      // const talkMapped = this._.take(this.newArrayMappedSchedule(), 2)
-      // const lastSchedule = this._.last(talkMapped)
-
-      // if (!this._.isEmpty(lastSchedule?.hours)) {
-      //   this._lunchTime(this._.head(talkMapped))
-
-      //   this.abbrDay = String(lastSchedule?.day.slice(0, 3))
-      //   const hours = Object.entries((lastSchedule as any).hours)
-
-      //   const hourData = new ScheduleExtractHours(hours)
-      //   hourData.hourOne = 1
-      //   hourData.hourTwo = 1
+    _lunchTime(data: any) {
+      // if (!this._.isEmpty(data?.hours)) {
+      //   this.abbrDay = String(data?.day.slice(0, 3))
+      //   const hours = Object.entries((data as any).hours)
+      //   const hourData = new ExtractHoursToday(hours)
       //   hourData.make()
-      //   this.hourOpen = hourData.hourOpen
+      //   const lunchTimeOpen = hourData.open
+      //   const lunchTimeClose = hourData.close
+      //   const open = this._.toNumber(
+      //     lunchTimeOpen.match(numberPattern).join('')
+      //   )
+      //   const close = this._.toNumber(
+      //     lunchTimeClose.match(numberPattern).join('')
+      //   )
+      //   if (this._.toNumber(now) > open && this._.toNumber(now) < close) {
+      //     this.statusSchedule = 'closed_lunch'
+      //     this.lunchTimeOpen = lunchTimeOpen
+      //     this.lunchTimeClose = lunchTimeClose
+      //   }
       // }
     },
 
@@ -428,12 +411,11 @@ export default Vue.extend({
 
   mounted() {
     this.init()
-
-    const finalMapSchedule = this.newArrayMappedSchedule() as any[]
+    const finalMapSchedule: ScheduleData = this.newArrayScheduleMap() as any
     this.finalMapSchedule = finalMapSchedule
-    console.log(finalMapSchedule)
-    // this.headScheduleNow()
-    // this.lastSchedule()
+
+    this.headScheduleNow()
+    this.lastSchedule()
   }
 })
 </script>
