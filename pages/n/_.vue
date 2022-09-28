@@ -29,7 +29,8 @@ export default {
   },
 
   methods: {
-    cutText(value) {
+    cutText(value = '') {
+      if (this._.isEmpty(value)) return ''
       const total = 155
       if (value.length > total) {
         return `${value.slice(0, total)}...`
@@ -39,13 +40,17 @@ export default {
 
     metaTitle() {
       return this.$attributes.meta_title
-        ? this.$attributes.meta_title.toUpperCase()
-        : this.$attributes.fantasy_name.toUpperCase()
+        ? this.$attributes.meta_title
+        : this.$attributes.fantasy_name
+        ? this.$attributes.fantasy_name.toUpperCase()
+        : ''
     },
     metaDescription() {
       return this.$attributes.meta_description
         ? this.$attributes.meta_description
-        : this.cutText(this.$attributes.description)
+        : this.$attributes.description
+        ? this.cutText(this.$attributes.description)
+        : ''
     }
   },
 

@@ -21,18 +21,28 @@
       enter-active-class="animate__animated animate__slideInRight animate__delay-200ms"
       leave-active-class="animate__animated animate__slideInRight animate__delay-200ms"
     >
-      <div v-if="show" class="w-5/6 md:w-3/6">
+      <div v-if="showHourSchedule" class="w-5/6 md:w-3/6">
         <div
-          v-for="data in newMappedSchedule()"
+          v-for="(data, index) in finalMapSchedule"
           :key="data.key"
           class="flex justify-between md:flex-none md:grid md:grid-cols-2 gap-0 text-base mb-5 md:mb-3 font-normal text-secondary"
         >
           <div :class="data | filterDay">
             {{ data.day }}
           </div>
+
           <template v-if="data.opened === false">
             <div
-              class="text-red-main-700 justify-self-end md:justify-self-start"
+              class="text-red-main-700 font-medium justify-self-end md:justify-self-start"
+              :class="data | filterDay"
+            >
+              {{ closed }}
+            </div>
+          </template>
+
+          <template v-else-if="index === 0 && statusSchedule === 'closed'">
+            <div
+              class="text-red-main-700 font-medium justify-self-end md:justify-self-start"
               :class="data | filterDay"
             >
               {{ closed }}
@@ -58,41 +68,65 @@
           </template>
         </div>
       </div>
+
+      <div v-else-if="showDaysSchedule" class="w-5/6 md:w-2/6">
+        <div
+          v-for="(data, index) in mappedDaysSchedule"
+          :key="data.key"
+          class="flex justify-between md:flex-none md:grid md:grid-cols-2 gap-0 text-base mb-5 md:mb-3 font-normal text-secondary"
+        >
+          <div>
+            {{ data.day }}
+          </div>
+        </div>
+      </div>
     </transition>
 
-    <div v-show="!show">
-      <template v-if="alwaysOpen">
-        <span class="text-sm font-medium text-secondary-main-normal">
-          Aberto 24 Horas
+    <template v-if="displaySchedule === 'always_open'">
+      <span class="text-sm font-medium text-secondary-main-normal">
+        Aberto 24 Horas
+      </span>
+    </template>
+
+    <template
+      v-else-if="displaySchedule === 'only_by_appointment' && display === true"
+    >
+      <button class="flex items-center gap-2" @click.prevent="showWeekDays()">
+        <span class="text-sm font-medium text-blue-600">
+          Somente com hora marcada
         </span>
-      </template>
+        <span>
+          <ArrowDropDownIcon />
+        </span>
+      </button>
+    </template>
 
-      <template v-else-if="selectedTime">
-        <button class="flex items-center gap-2" @click.prevent="showHours()">
-          <StatusScheduleDataBusinessDetailsWebsite :status="statusSchedule" />
+    <template
+      v-else-if="displaySchedule === 'selected_time' && display === true"
+    >
+      <button class="flex items-center gap-2" @click.prevent="showDataHours()">
+        <StatusScheduleDataBusinessDetailsWebsite :status="statusSchedule" />
+        <span
+          v-if="statusSchedule !== 'open'"
+          class="text-sm font-normal text-primary"
+        >
+          <template v-if="statusSchedule === 'closed_lunch'">
+            &sdot; retorna às {{ lunchTimeOpen || '' }}
+          </template>
 
-          <span
-            v-if="statusSchedule !== 'open'"
-            class="text-sm font-normal text-primary"
-          >
-            <template v-if="statusSchedule === 'closed_lunch'">
-              &sdot; retorna às {{ lunchTimeOpen || '' }}
-            </template>
+          <template v-else-if="statusSchedule !== 'closed'">
+            &sdot; {{ hourClose || '' }}
+          </template>
 
-            <template v-else-if="statusSchedule !== 'closed'">
-              &sdot; {{ hourClose || '' }}
-            </template>
-
-            <template v-else>
-              &sdot; abre {{ abbrDay }}. às {{ hourOpen || '' }}
-            </template>
-          </span>
-          <span>
-            <ArrowDropDownIcon />
-          </span>
-        </button>
-      </template>
-    </div>
+          <template v-else>
+            &sdot; abre {{ abbrDay }}. às {{ hourOpen || '' }}
+          </template>
+        </span>
+        <span>
+          <ArrowDropDownIcon />
+        </span>
+      </button>
+    </template>
   </div>
 </template>
 
@@ -105,7 +139,6 @@ import { ScheduleReplica } from '@/models'
 import { ScheduleData } from '@/types'
 import { daysOfWeek } from '@/utils/data/days-week'
 import ScheduleExtractHours from '@/utils/extract-hours-schedule'
-import { toNumber } from 'lodash'
 
 const numberPattern = /\d+/g
 const now = moment().format('HHmm')
@@ -113,11 +146,14 @@ const now = moment().format('HHmm')
 export default Vue.extend({
   data() {
     return {
-      alwaysOpen: false,
-      selectedTime: false,
+      finalMapSchedule: {},
+      display: true,
+      displaySchedule: '',
       closed: 'Fechado',
+      mappedDaysSchedule: {},
       scheduleDataWeek: [] as any[],
-      show: false,
+      showHourSchedule: false,
+      showDaysSchedule: false,
       shedule: '',
       abbrDay: '',
       hourOpen: '',
@@ -143,54 +179,91 @@ export default Vue.extend({
   },
 
   methods: {
-    showHours() {
-      this.show = true
+    init() {
+      if (this.$shedule) {
+        if (this.$shedule.data.length > 0) {
+          const data = JSON.parse(this.$shedule.data)
+          const schedule = data.schedule ? data.schedule : null
+          if (schedule === 'always_open') {
+            this.displaySchedule = schedule
+          } else if (schedule === 'only_by_appointment') {
+            this.displaySchedule = schedule
+            this.mappedDaysSchedule = this._scheduleNormamizeAppointment(
+              data.schedule_days
+            )
+          } else if (schedule === 'selected_time') {
+            this.displaySchedule = schedule
+            this._scheduleNormamizeSelectedTime(data.schedule_days)
+          }
+        }
+      }
     },
 
-    newMappedSchedule() {
-      const schedule = [] as ScheduleData[]
+    showDataHours() {
+      this.display = false
+      this.showHourSchedule = true
+    },
+
+    showWeekDays() {
+      this.display = false
+      this.showDaysSchedule = true
+    },
+
+    newArrayMappedSchedule() {
       const scheduleDataWeek = this.scheduleDataWeek
       const dataSchedule = scheduleDataWeek.reduce((acc: any, element: any) => {
         return element
       }, [])
 
-      this._sortArrayDayWeek().map((day: any) => {
-        dataSchedule.map((data: any) => {
-          if (data.key === day) schedule.push(data)
-        })
-      })
-      return schedule
+      const arraySorted = this._sortArrayDayWeek().map(
+        (element: any) => element
+      )
+
+      return this._.flattenDeep(
+        arraySorted.map((item: any) =>
+          this._.filter(dataSchedule, { key: item })
+        )
+      )
     },
 
     headScheduleNow() {
-      const firstSchedule = this._.head(this.newMappedSchedule())
-      if (!this._.isEmpty(firstSchedule?.hours)) {
-        const hours = Object.entries((firstSchedule as any).hours)
-        const hourData = new ScheduleExtractHours(hours)
-        hourData.hourOne = 1
-        hourData.hourTwo = 2
-        hourData.make()
+      console.log(this.finalMapSchedule)
+    },
 
-        const close = hourData.hourClose
-        this.hourClose = close
+    headScheduleNow_2() {
+      console.log('headScheduleNow', this.newArrayMappedSchedule())
 
-        const todayDate = moment().format().slice(0, 11)
-        const timeEnd = `${todayDate}${close}:00-04:00`
+      // const firstSchedule = this._.head(this.newArrayMappedSchedule())
 
-        const diffMs = moment().diff(moment(timeEnd))
-        const durObj = moment.duration(diffMs)
+      // console.log('firstSchedule', firstSchedule)
 
-        if (durObj.asHours() < -0.01) {
-          this.statusSchedule = 'soon'
-        } else {
-          const close = this._.toNumber(
-            hourData.hourClose.match(numberPattern).join('')
-          )
-          if (this._.toNumber(now) > close) {
-            this.statusSchedule = 'closed'
-          }
-        }
-      }
+      // if (!this._.isEmpty(firstSchedule?.hours)) {
+      //   const hours = Object.entries((firstSchedule as any).hours)
+
+      //   const hourData = new ScheduleExtractHours(hours)
+      //   hourData.hourOne = 1
+      //   hourData.hourTwo = 2
+      //   hourData.make()
+
+      //   const hourClose = hourData.hourClose
+
+      //   this.hourClose = hourClose
+
+      //   const todayDate = moment().format().slice(0, 11)
+      //   const timeEnd = `${todayDate}${hourClose}:00-04:00`
+
+      //   const diffMs = moment().diff(moment(timeEnd))
+      //   const durObj = moment.duration(diffMs)
+
+      //   if (durObj.asHours() < -0.01) {
+      //     this.statusSchedule = 'soon'
+      //   } else {
+      //     const close = this._.toNumber(hourClose.match(numberPattern).join(''))
+      //     if (this._.toNumber(now) > close) {
+      //       this.statusSchedule = 'closed'
+      //     }
+      //   }
+      // }
     },
 
     _lunchTime(data: any) {
@@ -222,36 +295,28 @@ export default Vue.extend({
       }
     },
 
-    lastSchedule() {
-      const talkMapped = this._.take(this.newMappedSchedule(), 2)
-      const lastSchedule = this._.last(talkMapped)
-
-      if (!this._.isEmpty(lastSchedule?.hours)) {
-        this._lunchTime(this._.head(talkMapped))
-
-        this.abbrDay = String(lastSchedule?.day.slice(0, 3))
-        const hours = Object.entries((lastSchedule as any).hours)
-        const hourData = new ScheduleExtractHours(hours)
-        hourData.hourOne = 1
-        hourData.hourTwo = 1
-        hourData.make()
-        this.hourOpen = hourData.hourOpen
-      }
+    lastSchedule2() {
+      console.log(this.finalMapSchedule)
     },
 
-    scheduleDataMap() {
-      if (this.$shedule) {
-        if (this.$shedule.data.length > 0) {
-          const data = JSON.parse(this.$shedule.data)
-          const schedule = data.schedule ? data.schedule : null
-          if (schedule === 'always_open') {
-            this.alwaysOpen = true
-          } else if (schedule === 'selected_time') {
-            this.selectedTime = true
-            this._scheduleNormamizeSelectedTime(data.schedule_days)
-          }
-        }
-      }
+    lastSchedule_2() {
+      console.log('lastSchedule', this.newArrayMappedSchedule())
+
+      // const talkMapped = this._.take(this.newArrayMappedSchedule(), 2)
+      // const lastSchedule = this._.last(talkMapped)
+
+      // if (!this._.isEmpty(lastSchedule?.hours)) {
+      //   this._lunchTime(this._.head(talkMapped))
+
+      //   this.abbrDay = String(lastSchedule?.day.slice(0, 3))
+      //   const hours = Object.entries((lastSchedule as any).hours)
+
+      //   const hourData = new ScheduleExtractHours(hours)
+      //   hourData.hourOne = 1
+      //   hourData.hourTwo = 1
+      //   hourData.make()
+      //   this.hourOpen = hourData.hourOpen
+      // }
     },
 
     _daysOfWeekReduce() {
@@ -323,6 +388,16 @@ export default Vue.extend({
       this.scheduleDataWeek.push(payload)
     },
 
+    _scheduleNormamizeAppointment(schedule_days: any) {
+      const schedule = Object.entries(schedule_days)
+      if (this._.isEmpty(schedule)) return false
+      return schedule.map(function (item: any) {
+        return daysOfWeek
+          .filter((day) => day.key === item[1] ?? null)
+          .reduce((el) => el)
+      })
+    },
+
     _scheduleNormamizeSelectedTime(schedule_days: any) {
       const schedule = Object.entries(schedule_days)
       const dataMapped = this._daysOfWeekMap(schedule)
@@ -347,9 +422,13 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.scheduleDataMap()
-    this.headScheduleNow()
-    this.lastSchedule()
+    this.init()
+
+    const finalMapSchedule = this.newArrayMappedSchedule()
+    this.finalMapSchedule = finalMapSchedule
+    console.log(finalMapSchedule)
+    // this.headScheduleNow()
+    // this.lastSchedule()
   }
 })
 </script>

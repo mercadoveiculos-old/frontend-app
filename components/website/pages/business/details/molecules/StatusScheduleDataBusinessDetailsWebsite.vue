@@ -1,9 +1,7 @@
 <template>
   <span>
     <template v-if="status === 'closed'">
-      <span class="text-sm font-medium text-secondary-main-normal">
-        Fechado
-      </span>
+      <span class="text-sm font-medium text-red-main-700"> Fechado </span>
     </template>
     <template v-else-if="status === 'soon'">
       <span class="text-sm font-medium text-secondary-main-normal">
