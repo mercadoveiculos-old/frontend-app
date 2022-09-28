@@ -68,18 +68,6 @@
           </template>
         </div>
       </div>
-
-      <div v-else-if="showDaysSchedule" class="w-5/6 md:w-2/6">
-        <div
-          v-for="(data, index) in mappedDaysSchedule"
-          :key="data.key"
-          class="flex justify-between md:flex-none md:grid md:grid-cols-2 gap-0 text-base mb-5 md:mb-3 font-normal text-secondary"
-        >
-          <div>
-            {{ data.day }}
-          </div>
-        </div>
-      </div>
     </transition>
 
     <template v-if="displaySchedule === 'always_open'">
@@ -88,17 +76,36 @@
       </span>
     </template>
 
-    <template
-      v-else-if="displaySchedule === 'only_by_appointment' && display === true"
-    >
-      <button class="flex items-center gap-2" @click.prevent="showWeekDays()">
-        <span class="text-sm font-medium text-blue-600">
-          Somente com hora marcada
-        </span>
-        <span>
-          <ArrowDropDownIcon />
-        </span>
-      </button>
+    <template v-else-if="displaySchedule === 'only_by_appointment'">
+      <div class="flex flex-col">
+        <button class="flex items-center gap-2" @click.prevent="showWeekDays()">
+          <span class="text-sm font-medium text-blue-600">
+            Somente com hora marcada
+          </span>
+          <span>
+            <ArrowDropDownIcon />
+          </span>
+        </button>
+        <div class="w-full mt-4">
+          <transition
+            name="fade"
+            enter-active-class="animate__animated animate__bounceIn animate__delay-200ms"
+            leave-active-class="animate__animated animate__bounceIn animate__delay-200ms"
+          >
+            <div v-if="showDaysSchedule" class="w-full">
+              <div
+                v-for="(data, index) in mappedDaysSchedule"
+                :key="data.key"
+                class="text-base font-semibold mb-5 md:mb-3 text-secondary"
+              >
+                <div>
+                  {{ data.day }}
+                </div>
+              </div>
+            </div>
+          </transition>
+        </div>
+      </div>
     </template>
 
     <template
