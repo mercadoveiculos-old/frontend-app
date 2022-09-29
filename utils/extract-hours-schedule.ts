@@ -1,72 +1,59 @@
-export default class ScheduleExtractHours {
+import _ from "lodash"
 
-  #hours
-  #hourOpen: any
-  #hourClose: any
-  #hourOne: number
-  #hourTwo: number
-  #lunch: boolean = false
+export class ExtractHoursToday {
+
+  #hours:[]
+  #open: any
+  #close: any
   constructor(hours: any) {
-    this.#hours = hours
-    this.#hourOne = 1
-    this.#hourTwo = 2
+    this.#hours = hours   
   }
 
-  make(): void {
-    this._mapHours()
+  get open() {
+    return this.#open
   }
 
-  set hourOne(value: number) {
-    this.#hourOne = value
-  } 
-
-  set hourTwo(value: number) {
-    this.#hourOne = value
-  } 
-
-  get hourOpen() {
-    return this.#hourOpen
+  get close() {
+    return this.#close
   }
 
-  get hourClose() {
-    return this.#hourClose
-  }
-
-  get lunchTime() {
-    this.#lunch = true
-    return this
-  }
-
-  _mapHours(): void {
-
-    const mapHours = this.#hours
-      .map((element: any) => element[1] ?? [])
-      .reduce((element: any) => element)
-
-    Array(mapHours).map((hour: any) => {
-
-      const hour1 = hour[this.#hourOne] ?? null
-      if(hour1) {
-      
-        this.#hourOpen = hour1.open
-        this.#hourClose = hour1.close  
-        if (!this.#lunch) {
-          this.#hourOpen = hour1.open 
-        }
-     
+  hourOpen() {
+    const hours = this.#hours.map((item) => item).reduce((item) => item)
+    const data = _.map(hours, 'open');
+   
+    data.forEach(item => {     
+      if (!_.isEmpty(item) && !_.isUndefined(item)) {
+        if(!this.#open)
+          this.#open = item
       }
+    })
+  }
 
-      const hour2 = hour[this.#hourTwo] ?? null
-      if(hour2) {
-        this.#hourOpen = hour2.open
-        
-        if (!this.#lunch) {   
-          this.#hourOpen = hour1.open        
-          this.#hourClose = hour2.close 
-        }
-      }      
+  hourClose() {
+    const hours = this.#hours.map((item) => item).reduce((item) => item)
+    const data = _.map(hours, 'close');
+    data.forEach(item => {
+      if (!_.isEmpty(item) && !_.isUndefined(item)) {
+        this.#close = item
+      }
+    })
+  }
+
+  hourLunchTime() {
+    const hours = this.#hours.map((item) => item).reduce((item) => item)
+    const dataClose = _.map(hours, 'close');
+    dataClose.forEach(item => {
+      if (!_.isEmpty(item) && !_.isUndefined(item)) {
+        if (!this.#close)
+          this.#close = item      
+      }
     })
 
+    const dataOpen = _.map(hours, 'open');
+    dataOpen.forEach(item => {
+      if (!_.isEmpty(item) && !_.isUndefined(item)) {
+        this.#open = item      
+      }
+    })
   }
-
 }

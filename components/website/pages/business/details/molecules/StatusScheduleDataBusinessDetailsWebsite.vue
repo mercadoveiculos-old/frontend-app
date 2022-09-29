@@ -14,7 +14,7 @@
       </span>
     </template>
     <template v-else>
-      <span class="text-sm font-medium text-green-600"> Aberto agora </span>
+      <span class="text-sm font-medium text-green-700"> Aberto agora </span>
     </template>
   </span>
 </template>
