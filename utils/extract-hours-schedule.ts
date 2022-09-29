@@ -20,6 +20,7 @@ export class ExtractHoursToday {
   hourOpen() {
     const hours = this.#hours.map((item) => item).reduce((item) => item)
     const data = _.map(hours, 'open');
+   
     data.forEach(item => {     
       if (!_.isEmpty(item) && !_.isUndefined(item)) {
         if(!this.#open)
@@ -34,6 +35,24 @@ export class ExtractHoursToday {
     data.forEach(item => {
       if (!_.isEmpty(item) && !_.isUndefined(item)) {
         this.#close = item
+      }
+    })
+  }
+
+  hourLunchTime() {
+    const hours = this.#hours.map((item) => item).reduce((item) => item)
+    const dataClose = _.map(hours, 'close');
+    dataClose.forEach(item => {
+      if (!_.isEmpty(item) && !_.isUndefined(item)) {
+        if (!this.#close)
+          this.#close = item      
+      }
+    })
+
+    const dataOpen = _.map(hours, 'open');
+    dataOpen.forEach(item => {
+      if (!_.isEmpty(item) && !_.isUndefined(item)) {
+        this.#open = item      
       }
     })
   }
