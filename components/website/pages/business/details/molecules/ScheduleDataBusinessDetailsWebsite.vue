@@ -126,7 +126,7 @@
           </template>
 
           <template v-if="statusSchedule !== 'closed_lunch'">
-            &sdot; abre {{ abbrDay }}. às {{ hourOpen }}
+            &sdot; abre {{ abbrDay }} às {{ hourOpen }}
           </template>
         </span>
         <span>
@@ -147,10 +147,8 @@ import { ScheduleData } from '@/types'
 import { daysOfWeek } from '@/utils/data/days-week'
 import { ExtractHoursToday } from '@/utils/extract-hours-schedule'
 
-const timeTemp = '2022-09-28T11:31:00-04:00'
 const numberPattern = /\d+/g
-const now = moment(timeTemp).format('HHmm')
-console.log(now)
+const now = moment().format('HHmm')
 
 export default Vue.extend({
   data() {
@@ -236,8 +234,6 @@ export default Vue.extend({
     },
 
     headScheduleNow() {
-      // http://localhost:3000/n/comercio-de-lonas/ms/beltrao-do-norte/delvalle-comercial-ltda
-      // http://localhost:3000/n/personalizacao-automotiva/df/valdez-do-leste/aranda-comercial-ltda-1
 
       const schedule = this.finalMapSchedule
       const firstSchedule = this._.head(schedule as any) as ScheduleData
@@ -257,7 +253,7 @@ export default Vue.extend({
           const todayDate = moment().format().slice(0, 11)
           const timeEnd = `${todayDate}${hourClose}:00-04:00`
 
-          const diffMs = moment(timeTemp).diff(moment(timeEnd))
+          const diffMs = moment().diff(moment(timeEnd))
           const durObj = moment.duration(diffMs)
           const soon = durObj.asHours()
 
@@ -278,7 +274,7 @@ export default Vue.extend({
             }
           }
         } catch (error) {
-          console.log(error)
+          // console.log(error)
         }
       } else {
         this.hideSchedule = true
@@ -292,13 +288,23 @@ export default Vue.extend({
       if (this._.isArray(lastSchedule?.hours)) {
         this._lunchTime(this._.head(talkMapped))
 
-        this.abbrDay = String(lastSchedule.day.slice(0, 3))
         const hours = lastSchedule.hours
-
         const hourToday = new ExtractHoursToday(hours)
         hourToday.hourOpen()
+        const open = hourToday.open
+        this.hourOpen = open
 
-        this.hourOpen = hourToday.open
+        const openNumber = this._.toNumber(open.match(numberPattern).join(''))
+        this.abbrDay = `${String(lastSchedule.day.slice(0, 3))}.`
+
+        if (this._.toNumber(now) < openNumber) {
+          const hours = lastSchedule.hours
+          const today = moment().format('dddd')
+          const equal = hours.some((item) => item[0] === today.toLowerCase())
+          if (equal) {
+            this.abbrDay = 'hoje'
+          }
+        }
       } else {
         this.hideSchedule = true
       }
@@ -306,8 +312,6 @@ export default Vue.extend({
 
     _lunchTime(data: any) {
       if (!this._.isEmpty(data?.hours)) {
-        this.abbrDay = String(data?.day.slice(0, 3))
-
         const hours = data.hours
         const hourData = new ExtractHoursToday(hours)
 
@@ -324,11 +328,7 @@ export default Vue.extend({
           lunchTimeClose.match(numberPattern).join('')
         )
 
-        console.log(this._.toNumber(now), open)
-
         if (this._.toNumber(now) > close && this._.toNumber(now) < open) {
-          console.log('closed_lunch')
-
           this.statusSchedule = 'closed_lunch'
           this.lunchTimeOpen = lunchTimeOpen
           this.lunchTimeClose = lunchTimeClose
